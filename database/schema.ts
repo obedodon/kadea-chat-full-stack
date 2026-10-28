@@ -61,7 +61,7 @@ export class ConversationSchema extends BaseModel {
 }
 
 export class MessageSchema extends BaseModel {
-  static $columns = ['body', 'conversationId', 'createdAt', 'deletedAt', 'fileName', 'filePath', 'id', 'senderId', 'updatedAt'] as const
+  static $columns = ['body', 'conversationId', 'createdAt', 'deletedAt', 'fileName', 'filePath', 'id', 'isBlocked', 'senderId', 'updatedAt'] as const
   $columns = MessageSchema.$columns
   @column()
   declare body: string | null
@@ -77,6 +77,8 @@ export class MessageSchema extends BaseModel {
   declare filePath: string | null
   @column({ isPrimary: true })
   declare id: number
+  @column()
+  declare isBlocked: boolean
   @column()
   declare senderId: number
   @column.dateTime({ autoCreate: true, autoUpdate: true })

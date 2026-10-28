@@ -60,7 +60,8 @@ function appendMessage(html) {
  */
 function markAsRead(conversationId, readUpTo) {
   if (String(conversationId) !== document.body.dataset.conversationId) return
-  document.querySelectorAll('.kc-msg--mine[data-sent-at]').forEach((message) => {
+  // Les messages non remis (data-sent-at vide) ne passent jamais à « lu »
+  document.querySelectorAll('.kc-msg--mine[data-sent-at]:not([data-sent-at=""])').forEach((message) => {
     if (Number(message.dataset.sentAt) <= readUpTo) {
       message.classList.add('is-read')
       message.querySelector('.kc-tick')?.setAttribute('title', 'Lu')
@@ -99,6 +100,12 @@ async function startRealtime() {
   subscription.onMessage(async (event) => {
     if (event.type === 'read') {
       markAsRead(event.conversationId, event.readUpTo)
+      return
+    }
+
+    // Blocage ou déblocage de la discussion ouverte : on recharge pour l'afficher
+    if (event.type === 'blocked' && String(event.conversationId) === document.body.dataset.conversationId) {
+      window.location.reload()
       return
     }
 
@@ -211,6 +218,39 @@ Alpine.data('newChat', function () {
 })
 
 /**
+ * Visionneuse de photos : un clic sur une photo l'ouvre en plein écran.
+ * Exceptions : les photos qui servent à en choisir une nouvelle (.kc-photo)
+ * et celles de la recherche de personnes (.kc-person), où le clic sélectionne.
+ */
+document.addEventListener('click', (event) => {
+  const image = event.target.closest('.kc-avatar__img')
+  if (!image || !image.getAttribute('src') || image.closest('.kc-photo, .kc-person')) return
+  // Dans la liste, la photo est dans un lien : on ouvre la photo au lieu de la discussion
+  event.preventDefault()
+  window.dispatchEvent(
+    new CustomEvent('open-photo', { detail: { src: image.src, name: image.dataset.name || 'Photo' } })
+  )
+})
+
+Alpine.data('photoViewer', function () {
+  return {
+    src: null,
+    name: '',
+    show({ src, name }) {
+      this.src = src
+      this.name = name
+    },
+    close() {
+      this.src = null
+    },
+    get downloadUrl() {
+      if (!this.src) return '#'
+      return this.src + (this.src.includes('?') ? '&' : '?') + 'download=1'
+    },
+  }
+})
+
+/**
  * Sélection de plusieurs personnes (« Nouveau groupe », « Ajouter des membres »).
  * exclude : identifiants à ne pas proposer (les membres actuels du groupe).
  */
@@ -293,6 +333,9 @@ Alpine.data('composer', function () {
           appendMessage(html)
           input.value = ''
           refreshList()
+        } else if (response.status === 403) {
+          // Discussion bloquée entre-temps : la page affichera pourquoi
+          window.location.reload()
         }
       } catch {
         // Réseau coupé : on garde le texte pour que l'utilisateur puisse réessayer

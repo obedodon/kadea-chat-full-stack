@@ -4,7 +4,7 @@
     <a href="{{ route('conversations.index') }}" class="kc-icon-btn kc-back" aria-label="Retour aux discussions">
       @svg('lucide:arrow-left', { width: 22, height: 22 })
     </a>
-    @!kcAvatar({ url: header.avatarUrl, initials: header.initials, tone: header.tone, group: header.isGroup, size: 'md' })
+    @!kcAvatar({ name: header.title, url: header.avatarUrl, initials: header.initials, tone: header.tone, group: header.isGroup, size: 'md' })
     <div class="kc-thread__who">
       <h1 class="kc-thread__title">{{ header.title }}</h1>
       @if(header.subtitle)
@@ -40,28 +40,40 @@
     @end
   </section>
 
-  @form({
-    route: 'messages.store',
-    routeParams: { id: header.id },
-    method: 'POST',
-    class: 'kc-composer',
-    'x-data': 'composer',
-    'x-on:submit.prevent': 'send($el)',
-  })
-    <input
-      class="kc-composer__input"
-      type="text"
-      name="body"
-      placeholder="Écrire un message"
-      aria-label="Écrire un message"
-      autocomplete="off"
-      maxlength="2000"
-      required
-      autofocus
-    />
-    <button type="submit" class="kc-send" aria-label="Envoyer" x-bind:disabled="sending">
-      @svg('lucide:send', { width: 24, height: 24 })
-    </button>
+  @if(block && block.iBlocked)
+    <div class="kc-composer kc-composer--blocked" role="status">
+      <p>
+        @svg('lucide:ban', { width: 20, height: 20 })
+        Tu as bloqué {{ contact.fullName }}.
+      </p>
+      @form({ route: 'blocks.destroy', routeParams: { id: contact.id }, method: 'POST' })
+        <button type="submit" class="kc-btn kc-btn--outline kc-btn--sm">Débloquer</button>
+      @end
+    </div>
+  @else
+    @form({
+      route: 'messages.store',
+      routeParams: { id: header.id },
+      method: 'POST',
+      class: 'kc-composer',
+      'x-data': 'composer',
+      'x-on:submit.prevent': 'send($el)',
+    })
+      <input
+        class="kc-composer__input"
+        type="text"
+        name="body"
+        placeholder="Écrire un message"
+        aria-label="Écrire un message"
+        autocomplete="off"
+        maxlength="2000"
+        required
+        autofocus
+      />
+      <button type="submit" class="kc-send" aria-label="Envoyer" x-bind:disabled="sending">
+        @svg('lucide:send', { width: 24, height: 24 })
+      </button>
+    @end
   @end
 
   @if(group)

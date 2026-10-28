@@ -3,7 +3,7 @@
     <a href="{{ route('conversations.index') }}" class="kc-icon-btn kc-back" aria-label="Retour aux discussions">
       @svg('lucide:arrow-left', { width: 22, height: 22 })
     </a>
-    @!kcAvatar({ url: profile.avatarUrl, initials: profile.initials, tone: profile.tone, size: 'md' })
+    @!kcAvatar({ name: profile.fullName, url: profile.avatarUrl, initials: profile.initials, tone: profile.tone, size: 'md' })
     <div class="kc-thread__who">
       <h1 class="kc-thread__title">{{ profile.fullName }}</h1>
       <p class="kc-thread__sub">{{ profile.email }}</p>
@@ -118,6 +118,33 @@
             <button type="submit" class="kc-btn kc-btn--primary kc-btn--sm">Enregistrer le mot de passe</button>
           </div>
         @end
+      </div>
+    </section>
+
+    {{-- Utilisateurs bloqués --}}
+    <section class="kc-card">
+      <span class="kc-card__icon">
+        @svg('lucide:ban', { width: 26, height: 26 })
+      </span>
+      <div class="kc-card__body">
+        <h3 class="kc-card__title">Utilisateurs bloqués</h3>
+        <p class="kc-card__sub">Les utilisateurs bloqués ne peuvent plus t'envoyer de messages.</p>
+        <ul class="kc-blocked">
+          @each(person in blockedUsers)
+            <li class="kc-blocked__item">
+              @!kcAvatar({ name: person.fullName, url: person.avatarUrl, initials: person.initials, tone: person.tone, size: 'sm' })
+              <div class="kc-blocked__text">
+                <strong>{{ person.fullName }}</strong>
+                <span>Bloqué le {{ person.since }}</span>
+              </div>
+              @form({ route: 'blocks.destroy', routeParams: { id: person.id }, method: 'POST' })
+                <button type="submit" class="kc-btn kc-btn--danger kc-btn--sm">Débloquer</button>
+              @end
+            </li>
+          @else
+            <li class="kc-blocked__empty">Tu n'as bloqué personne.</li>
+          @end
+        </ul>
       </div>
     </section>
 

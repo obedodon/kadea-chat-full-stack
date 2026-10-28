@@ -77,7 +77,7 @@
       <ul class="kc-members">
         @each(member in group.members)
           <li class="kc-member">
-            @!kcAvatar({ url: member.avatarUrl, initials: member.initials, tone: member.tone, size: 'xs' })
+            @!kcAvatar({ name: member.fullName, url: member.avatarUrl, initials: member.initials, tone: member.tone, size: 'xs' })
             <span class="kc-member__name">{{ member.fullName }}{{ member.isMe ? ' (toi)' : '' }}</span>
             @if(member.isAdmin)
               <span class="kc-member__role">Admin</span>

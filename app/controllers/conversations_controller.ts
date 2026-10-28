@@ -6,6 +6,7 @@ import User from '#models/user'
 import ConversationListService from '#services/conversation_list_service'
 import MessageThreadService from '#services/message_thread_service'
 import RealtimeService from '#services/realtime_service'
+import BlockService from '#services/block_service'
 import { startConversationValidator } from '#validators/conversation'
 
 /**
@@ -43,6 +44,11 @@ export default class ConversationsController {
     const target = await User.query().where('id', userId).whereNotNull('email_verified_at').first()
     if (!target || target.id === user.id) {
       session.flash('error', "Cette personne n'est pas disponible.")
+      return response.redirect().toRoute('conversations.index')
+    }
+
+    if ((await BlockService.between(user.id, target.id)).iBlocked) {
+      session.flash('error', "Tu as bloqué cette personne. Débloque-la d'abord, depuis ton profil.")
       return response.redirect().toRoute('conversations.index')
     }
 
@@ -88,9 +94,11 @@ export default class ConversationsController {
       .firstOrFail()
 
     // Les 50 derniers messages, remis du plus ancien au plus récent
+    // (sans les messages non remis, sauf pour leur auteur)
     const messages = await conversation
       .related('messages')
       .query()
+      .where(BlockService.visibleMessages(user.id))
       .preload('sender')
       .orderBy('created_at', 'desc')
       .orderBy('id', 'desc')
@@ -107,12 +115,18 @@ export default class ConversationsController {
 
     const conversations = await ConversationListService.forUser(user)
     const readUpTo = await MessageThreadService.readUpTo(conversation.id, user.id)
+    const other = conversation.isGroup ? null : conversation.otherParticipant(user)
+    const block = other ? await BlockService.between(user.id, other.id) : null
+    const contact = other
+      ? ConversationListService.contactInfo(conversation, user, block!.blockedMe)
+      : null
 
     return view.render('pages/conversations/show', {
       conversations,
-      header: ConversationListService.header(conversation, user),
+      header: ConversationListService.header(conversation, user, Boolean(block?.blockedMe)),
       group: conversation.isGroup ? ConversationListService.groupInfo(conversation, user) : null,
-      contact: conversation.isGroup ? null : ConversationListService.contactInfo(conversation, user),
+      contact,
+      block,
       days: MessageThreadService.group(messages, user, conversation.isGroup, readUpTo),
     })
   }

@@ -1,6 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
 import { avatarTone } from '#services/avatar'
+import BlockService from '#services/block_service'
 
 /**
  * Recherche de personnes pour la fenêtre « Nouvelle discussion » (écran 09).
@@ -23,6 +24,7 @@ export default class UsersController {
     const users = await User.query()
       .whereNot('id', user.id)
       .whereNotNull('email_verified_at')
+      .whereNotIn('id', BlockService.blockedByMe(user.id))
       .where((query) => query.whereILike('full_name', pattern).orWhereILike('email', pattern))
       .orderBy('full_name')
       .limit(8)
