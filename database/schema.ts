@@ -7,6 +7,19 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class AvatarSchema extends BaseModel {
+  static $columns = ['createdAt', 'data', 'mimeType', 'name'] as const
+  $columns = AvatarSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare data: Buffer
+  @column()
+  declare mimeType: string
+  @column({ isPrimary: true })
+  declare name: string
+}
+
 export class BlockSchema extends BaseModel {
   static $columns = ['blockedId', 'blockerId', 'createdAt', 'id'] as const
   $columns = BlockSchema.$columns
