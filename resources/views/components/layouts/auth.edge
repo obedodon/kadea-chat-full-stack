@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-  lang="en-us"
+  lang="fr"
   data-theme="{{
     request.plainCookie('app_theme', {
       defaultValue: 'light',
@@ -11,7 +11,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AdonisJS — Starter Kit</title>
+    <title>{{ $props.get('title', 'Kadea Chat') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
@@ -28,22 +28,9 @@
           @!themeToggle()
         </div>
 
-        <p class="auth__quote">Auth, kept intentionally minimal so you can build it your way.</p>
+        <p class="auth__quote">Tes discussions Kadea, en direct.</p>
 
-        <div>
-          <div class="pitch__t">Looking for production-ready auth?</div>
-          <p class="pitch__p">
-            Check out Feature packs, production-ready full-stack components from the creator of AdonisJS.
-          </p>
-          <a
-            class="il pitch__a"
-            href="https://plus.adonisjs.com/feature-packs"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Explore Feature packs →
-          </a>
-        </div>
+        <p class="pitch__p">Écris à ta promo, crée des groupes de projet et retrouve tout à chaque connexion.</p>
       </aside>
     </div>
     @include('partials/flash_alerts')

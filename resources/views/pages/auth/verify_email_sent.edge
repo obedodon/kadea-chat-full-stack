@@ -1,0 +1,43 @@
+@layouts.auth({ title: 'Vérifie ta boîte mail — Kadea Chat' })
+  <h1 class="auth__title">Vérifie ta boîte mail</h1>
+  @if(email)
+    <p class="auth__sub">
+      On a envoyé un lien de confirmation à <strong>{{ email }}</strong>.
+      Clique dessus pour activer ton compte. Il reste valable 24 heures.
+    </p>
+  @else
+    <p class="auth__sub">
+      Un lien de confirmation t'a été envoyé par e-mail. Clique dessus pour activer ton compte.
+    </p>
+  @end
+
+  <p class="auth__sub">Rien reçu ? Regarde dans tes spams, ou renvoie l'e-mail.</p>
+
+  @form({
+    route: 'verification.resend',
+    method: 'POST',
+    class: 'auth__form',
+    'x-data': '{ submitting: false }',
+    'x-on:submit': 'submitting = true',
+  })
+    @field.root({ name: 'email' })
+      @!field.label({ text: 'Adresse e-mail' })
+      @!input.control({ type: 'email', autocomplete: 'email', value: email })
+      @!field.error()
+    @end
+    @!button({
+      text: "Renvoyer l'e-mail",
+      type: 'submit',
+      variant: 'secondary',
+      block: true,
+      'x-bind:disabled': 'submitting',
+      'x-text': "submitting ? 'Envoi…' : 'Renvoyer l\\'e-mail'",
+    })
+  @end
+
+  <p class="auth__foot">
+    @link({ route: 'session.create', class: 'il' })
+      Retour à la connexion
+    @end
+  </p>
+@end

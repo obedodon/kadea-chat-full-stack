@@ -1,6 +1,6 @@
-@layouts.auth()
-  <h1 class="auth__title">Welcome back</h1>
-  <p class="auth__sub">Sign in to continue building.</p>
+@layouts.auth({ title: 'Connexion — Kadea Chat' })
+  <h1 class="auth__title">Content de te revoir</h1>
+  <p class="auth__sub">Connecte-toi pour reprendre tes discussions.</p>
   @form({
     route: 'session.store',
     method: 'POST',
@@ -9,41 +9,41 @@
     'x-on:submit': 'submitting = true',
   })
     @field.root({ name: 'email' })
-      @!field.label({ text: 'Email' })
+      @!field.label({ text: 'Adresse e-mail' })
       @!input.control({
         type: 'email',
         autocomplete: 'username',
-        placeholder: 'you@example.com',
+        placeholder: 'grace@exemple.com',
       })
       @!field.error()
     @end
     @field.root({ name: 'password' })
-      @!field.label({ text: 'Password' })
-      @!input.control({
-        type: 'password',
+      @!field.label({ text: 'Mot de passe' })
+      @!input.password({
         autocomplete: 'current-password',
         placeholder: '••••••••',
       })
       @!field.error()
     @end
+    <p style="margin: -4px 0 0; text-align: right;">
+      @link({ route: 'password.forgot', class: 'il' })
+        Mot de passe oublié ?
+      @end
+    </p>
     @!button({
-      text: 'Sign in',
+      text: 'Connexion',
       type: 'submit',
       block: true,
       style: 'margin-top: 4px;',
       'x-bind:disabled': 'submitting',
-      'x-text': "submitting ? 'One moment…' : 'Sign in'",
+      'x-text': "submitting ? 'Connexion…' : 'Connexion'",
     })
   @end
 
   <p class="auth__foot">
-    
-
-    New here?
-
-
+    Pas encore de compte ?
     @link({ route: 'new_account.create', class: 'il' })
-      Create an account
+      Créer un compte
     @end
   </p>
 @end
