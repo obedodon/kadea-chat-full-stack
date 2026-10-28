@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
 import ConversationListService from '#services/conversation_list_service'
-import { avatarPath, avatarTone, storeAvatar } from '#services/avatar'
+import { avatarTone, findAvatar, storeAvatar } from '#services/avatar'
 import { changePasswordValidator, profileValidator } from '#validators/user'
 import Block from '#models/block'
 import { APP_ZONE } from '#services/date_format'
@@ -80,15 +80,19 @@ export default class ProfileController {
    * Le nom est contrôlé par la route : pas de « ../ » possible.
    */
   async avatar({ params, request, response }: HttpContext) {
-    const filePath = avatarPath(params.file)
+    const avatar = await findAvatar(params.file)
+    if (!avatar) {
+      return response.notFound('Photo introuvable')
+    }
 
+    response.header('Content-Type', avatar.mimeType)
     // ?download=1 : le navigateur enregistre la photo au lieu de l'afficher
     if (request.input('download')) {
       const extension = params.file.split('.').pop()
-      return response.attachment(filePath, `photo-kadea-chat.${extension}`)
+      response.header('Content-Disposition', `attachment; filename="photo-kadea-chat.${extension}"`)
+    } else {
+      response.header('Cache-Control', 'private, max-age=86400')
     }
-
-    response.header('Cache-Control', 'private, max-age=86400')
-    return response.download(filePath)
+    return response.send(avatar.data)
   }
 }
