@@ -81,7 +81,7 @@ export default class MessagesController {
   ) {
     const readUpTo = await MessageThreadService.readUpTo(conversation.id, viewer.id)
     return view.render('partials/message', {
-      message: MessageThreadService.present(message, viewer, conversation.isGroup, readUpTo),
+      message: MessageThreadService.present(message, viewer, conversation.isGroup, false, readUpTo),
     })
   }
 

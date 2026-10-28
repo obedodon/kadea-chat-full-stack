@@ -1,0 +1,51 @@
+{{-- Recherche de personnes à sélection multiple (fenêtres « Nouveau groupe » et « Ajouter des membres ») --}}
+<label class="kc-finder">
+  @svg('lucide:search', { width: 22, height: 22 })
+  <input
+    x-ref="q"
+    type="text"
+    x-model="q"
+    x-on:input.debounce.250ms="search()"
+    placeholder="Nom ou adresse e-mail"
+    aria-label="Rechercher une personne"
+    autocomplete="off"
+  />
+  <button type="button" class="kc-finder__clear" x-show="q" x-on:click="clear()" aria-label="Effacer">
+    @svg('lucide:circle-x', { width: 20, height: 20 })
+  </button>
+</label>
+
+<div class="kc-chips" x-show="chosen.length" x-cloak>
+  <template x-for="person in chosen" x-bind:key="person.id">
+    <button type="button" class="kc-chip" x-on:click="toggle(person)" x-bind:aria-label="'Retirer ' + person.fullName">
+      <span x-text="person.fullName"></span>
+      @svg('lucide:x', { width: 14, height: 14 })
+    </button>
+  </template>
+</div>
+
+<p class="kc-modal__count" x-show="searched" x-text="countLabel"></p>
+
+<ul class="kc-people">
+  <template x-for="person in results" x-bind:key="person.id">
+    <li>
+      <button
+        type="button"
+        class="kc-person"
+        x-bind:class="{ 'is-selected': isChosen(person) }"
+        x-bind:aria-pressed="isChosen(person)"
+        x-on:click="toggle(person)"
+      >
+        <span class="kc-avatar kc-avatar--md" x-bind:class="'kc-avatar--' + person.tone" x-text="person.initials"></span>
+        <span class="kc-person__text">
+          <strong x-text="person.fullName"></strong>
+          <span x-text="person.email"></span>
+        </span>
+      </button>
+    </li>
+  </template>
+</ul>
+
+<template x-for="person in chosen" x-bind:key="'input-' + person.id">
+  <input type="hidden" name="memberIds[]" x-bind:value="person.id" />
+</template>

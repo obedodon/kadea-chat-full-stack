@@ -90,7 +90,41 @@ export default class ConversationListService {
       isGroup: conversation.isGroup,
       initials: other?.initials ?? '?',
       tone: avatarTone(other?.id ?? conversation.id),
-      subtitle: conversation.isGroup ? `${conversation.participants.length} membres` : (other?.email ?? ''),
+      subtitle: conversation.isGroup
+        ? `${conversation.participants.length} membres : ${this.firstNames(conversation)}`
+        : (other?.email ?? ''),
     }
+  }
+
+  /**
+   * Panneau « Infos du groupe » (maquette 08). Nécessite participants (preload).
+   * Le rôle vient de la table conversation_members (pivot_role).
+   */
+  static groupInfo(conversation: Conversation, viewer: User) {
+    const members = conversation.participants
+      .map((participant) => ({
+        id: participant.id,
+        fullName: participant.fullName,
+        initials: participant.initials,
+        tone: avatarTone(participant.id),
+        isAdmin: participant.$extras.pivot_role === 'admin',
+        isMe: participant.id === viewer.id,
+      }))
+      // Les admins d'abord, puis par ordre alphabétique
+      .sort((a, b) => Number(b.isAdmin) - Number(a.isAdmin) || a.fullName.localeCompare(b.fullName))
+
+    return {
+      id: conversation.id,
+      name: conversation.name ?? '',
+      description: conversation.description ?? '',
+      firstNames: this.firstNames(conversation),
+      members,
+      memberIds: members.map((member) => member.id),
+      canManage: members.some((member) => member.isMe && member.isAdmin),
+    }
+  }
+
+  private static firstNames(conversation: Conversation) {
+    return conversation.participants.map((participant) => participant.fullName.split(' ')[0]).join(', ')
   }
 }

@@ -600,6 +600,265 @@
   cursor: not-allowed;
 }
 
+/* ==========================================================================
+   08 · Groupes
+   ========================================================================== */
+.kc-view {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.kc-info-btn {
+  margin-left: auto;
+  border-radius: 50%;
+}
+.kc-info-btn.is-on {
+  background: #fdf1e3;
+  color: var(--kc-amber-dark);
+}
+.kc-avatar--xs {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+.kc-avatar--sm {
+  width: 44px;
+  height: 44px;
+  font-size: 15px;
+}
+.kc-avatar--lg {
+  width: 96px;
+  height: 96px;
+}
+
+/* messages des autres dans un groupe : avatar + nom */
+.kc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: min(620px, 80%);
+}
+.kc-row__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.kc-row .kc-msg {
+  max-width: 100%;
+}
+.kc-row .kc-msg__author {
+  color: var(--kc-ink);
+  font-size: 15px;
+  margin: 2px 0 4px;
+}
+.kc-row.is-followup {
+  margin-top: -4px;
+}
+.kc-row.is-followup .kc-avatar {
+  visibility: hidden;
+  height: 0;
+}
+.kc-row.is-followup .kc-msg__author {
+  display: none;
+}
+
+/* panneau « Infos du groupe » */
+.kc-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  width: 340px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid var(--kc-line);
+  box-shadow: -12px 0 32px rgba(27, 29, 41, 0.08);
+}
+.kc-panel__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  padding: 0 16px 0 24px;
+  border-bottom: 1px solid var(--kc-line);
+}
+.kc-panel__head h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+.kc-panel__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 24px;
+}
+.kc-panel__id {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 24px 0;
+  text-align: center;
+  color: var(--kc-muted);
+  font-size: 14px;
+}
+.kc-panel__id .kc-avatar {
+  margin-bottom: 12px;
+}
+.kc-panel__id h3 {
+  color: var(--kc-ink);
+  font-size: 20px;
+  font-weight: 700;
+}
+.kc-panel__section {
+  padding: 16px 0;
+  border-top: 1px solid var(--kc-line);
+}
+.kc-panel__desc {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--kc-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.kc-panel__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kc-panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+.kc-panel__title {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.kc-members {
+  list-style: none;
+}
+.kc-member {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 48px;
+  padding: 4px 0;
+  font-size: 15px;
+  text-align: left;
+}
+.kc-member__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.kc-member__role {
+  color: var(--kc-muted);
+  font-size: 13px;
+}
+.kc-member__remove {
+  width: 36px;
+  height: 36px;
+  color: var(--kc-muted);
+}
+.kc-member__remove:hover {
+  color: #c2353a;
+}
+.kc-member__icon {
+  width: 36px;
+  display: grid;
+  place-items: center;
+}
+.kc-member--action:hover {
+  color: var(--kc-amber-dark);
+}
+.kc-member--danger {
+  color: #c2353a;
+}
+
+/* formulaires des fenêtres */
+.kc-modal__form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+.kc-label {
+  margin: 12px 0 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.kc-label span {
+  color: var(--kc-muted);
+  font-weight: 400;
+}
+.kc-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--kc-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--kc-ink);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+.kc-input--area {
+  resize: vertical;
+  line-height: 1.4;
+}
+.kc-input:focus {
+  border-color: var(--kc-amber);
+  box-shadow: 0 0 0 3px rgba(242, 165, 65, 0.25);
+}
+.kc-modal__form .kc-finder {
+  margin-top: 0;
+}
+.kc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.kc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 14px;
+  border-radius: 16px;
+  background: #fdf1e3;
+  color: var(--kc-ink);
+  font-size: 14px;
+}
+.kc-chip:hover {
+  background: #fbe3c6;
+}
+.kc-btn--sm {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+/* grand écran : la discussion se décale pour laisser la place au panneau */
+@media (min-width: 1200px) {
+  .kc-view.has-panel {
+    padding-right: 340px;
+  }
+}
+
 /* --- téléphone : une seule colonne à la fois --- */
 @media (max-width: 880px) {
   .kc-chat {
@@ -645,5 +904,11 @@
   }
   .kc-modal__card {
     padding: 24px 20px;
+  }
+  .kc-panel {
+    width: 100%;
+  }
+  .kc-row {
+    max-width: 92%;
   }
 }
