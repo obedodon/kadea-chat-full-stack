@@ -387,7 +387,13 @@
 .kc-msg--mine .kc-msg__meta {
   color: #b9bccb;
 }
-.kc-msg--mine .kc-msg__meta svg {
+/* accusés de lecture : gris à l'envoi, orange une fois lu */
+.kc-tick {
+  display: flex;
+  color: #8a8fa0;
+  transition: color 0.3s;
+}
+.kc-msg.is-read .kc-tick {
   color: var(--kc-amber);
 }
 .kc-msg--deleted {

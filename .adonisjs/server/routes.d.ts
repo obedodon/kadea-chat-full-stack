@@ -4,6 +4,9 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
+    'event_stream': { paramsTuple?: []; params?: {} }
+    'subscribe': { paramsTuple?: []; params?: {} }
+    'unsubscribe': { paramsTuple?: []; params?: {} }
     'home': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
@@ -17,13 +20,16 @@ export type ScannedRoutes = {
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'password.update': { paramsTuple?: []; params?: {} }
     'conversations.index': { paramsTuple?: []; params?: {} }
+    'conversations.sidebar': { paramsTuple?: []; params?: {} }
     'users.search': { paramsTuple?: []; params?: {} }
     'conversations.store': { paramsTuple?: []; params?: {} }
     'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'messageId': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
+    'event_stream': { paramsTuple?: []; params?: {} }
     'home': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
@@ -32,10 +38,13 @@ export type ScannedRoutes = {
     'password.forgot': { paramsTuple?: []; params?: {} }
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'conversations.index': { paramsTuple?: []; params?: {} }
+    'conversations.sidebar': { paramsTuple?: []; params?: {} }
     'users.search': { paramsTuple?: []; params?: {} }
     'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'messageId': ParamValue} }
   }
   HEAD: {
+    'event_stream': { paramsTuple?: []; params?: {} }
     'home': { paramsTuple?: []; params?: {} }
     'new_account.create': { paramsTuple?: []; params?: {} }
     'session.create': { paramsTuple?: []; params?: {} }
@@ -44,10 +53,14 @@ export type ScannedRoutes = {
     'password.forgot': { paramsTuple?: []; params?: {} }
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'conversations.index': { paramsTuple?: []; params?: {} }
+    'conversations.sidebar': { paramsTuple?: []; params?: {} }
     'users.search': { paramsTuple?: []; params?: {} }
     'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'messageId': ParamValue} }
   }
   POST: {
+    'subscribe': { paramsTuple?: []; params?: {} }
+    'unsubscribe': { paramsTuple?: []; params?: {} }
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'verification.resend': { paramsTuple?: []; params?: {} }

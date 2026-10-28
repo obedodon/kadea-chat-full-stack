@@ -15,8 +15,11 @@ export default class Message extends MessageSchema {
   @belongsTo(() => User, { foreignKey: 'senderId' })
   declare sender: BelongsTo<typeof User>
 
-  /** Un message supprimé reste en base, mais n'affiche plus son contenu. */
+  /**
+   * Un message supprimé reste en base, mais n'affiche plus son contenu.
+   * « != null » couvre null (lu en base) et undefined (message tout juste créé).
+   */
   get isDeleted() {
-    return this.deletedAt !== null
+    return this.deletedAt !== null && this.deletedAt !== undefined
   }
 }

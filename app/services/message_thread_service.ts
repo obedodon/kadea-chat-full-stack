@@ -1,25 +1,20 @@
 import type Message from '#models/message'
+import ConversationMember from '#models/conversation_member'
 import type User from '#models/user'
 import { formatDayLabel, formatTime } from '#services/date_format'
 
+export type MessageView = ReturnType<typeof MessageThreadService.present>
+
 /**
- * Range les messages par jour (« Hier », « Aujourd'hui »…) pour l'écran 07.
- * Les messages doivent arriver du plus ancien au plus récent, avec sender préchargé.
+ * Prépare les messages pour l'écran 07.
  */
 export default class MessageThreadService {
-  static group(messages: Message[], viewer: User, isGroup: boolean) {
-    const days: {
-      label: string
-      messages: {
-        id: number
-        mine: boolean
-        deleted: boolean
-        body: string | null
-        time: string
-        senderId: number
-        senderName: string | null
-      }[]
-    }[] = []
+  /**
+   * Range les messages par jour (« Hier », « Aujourd'hui »…).
+   * Les messages doivent arriver du plus ancien au plus récent, avec sender préchargé.
+   */
+  static group(messages: Message[], viewer: User, isGroup: boolean, readUpTo: number | null) {
+    const days: { label: string; messages: MessageView[] }[] = []
 
     for (const message of messages) {
       const label = formatDayLabel(message.createdAt)
@@ -29,22 +24,53 @@ export default class MessageThreadService {
         days.push(day)
       }
 
-      const mine = message.senderId === viewer.id
+      // Dans un groupe, le nom de l'auteur s'affiche au début de chaque série de messages
       const previous = day.messages.at(-1)
-      // Dans un groupe, on affiche le nom de l'auteur au début de chaque série de messages
-      const showName = isGroup && !mine && previous?.senderId !== message.senderId
-
-      day.messages.push({
-        id: message.id,
-        mine,
-        deleted: message.isDeleted,
-        body: message.isDeleted ? null : message.body,
-        time: formatTime(message.createdAt),
-        senderId: message.senderId,
-        senderName: showName ? message.sender.fullName : null,
-      })
+      const showName = isGroup && previous?.senderId !== message.senderId
+      day.messages.push(this.present(message, viewer, showName, readUpTo))
     }
 
     return days
+  }
+
+  /**
+   * Un message en données simples pour la vue partials/message.edge.
+   */
+  static present(message: Message, viewer: User, showName: boolean, readUpTo: number | null) {
+    const mine = message.senderId === viewer.id
+    const sentAt = message.createdAt.toMillis()
+    return {
+      id: message.id,
+      mine,
+      deleted: message.isDeleted,
+      body: message.isDeleted ? null : message.body,
+      time: formatTime(message.createdAt),
+      dayLabel: formatDayLabel(message.createdAt),
+      senderId: message.senderId,
+      senderName: showName && !mine ? message.sender.fullName : null,
+      sentAt,
+      // Accusé de lecture : mon message a été lu par au moins une autre personne
+      read: mine && readUpTo !== null && sentAt <= readUpTo,
+    }
+  }
+
+  /**
+   * Jusqu'à quand mes messages sont lus (en millisecondes) : la plus récente
+   * des dates de dernière lecture des AUTRES membres. Dans un groupe, il suffit
+   * donc qu'une seule autre personne ait lu pour que le message compte comme lu.
+   * null si personne d'autre n'a encore ouvert la discussion.
+   */
+  static async readUpTo(conversationId: number, viewerId: number) {
+    const others = await ConversationMember.query()
+      .where('conversation_id', conversationId)
+      .whereNot('user_id', viewerId)
+    return this.latestReadAt(others)
+  }
+
+  static latestReadAt(members: ConversationMember[]) {
+    const dates = members
+      .filter((member) => member.lastReadAt)
+      .map((member) => member.lastReadAt!.toMillis())
+    return dates.length > 0 ? Math.max(...dates) : null
   }
 }
