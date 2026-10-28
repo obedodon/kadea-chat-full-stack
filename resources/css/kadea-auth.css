@@ -1,0 +1,350 @@
+/* ==========================================================================
+   Kadea Chat — pages d'authentification (maquettes 01 à 05)
+   ========================================================================== */
+:root {
+  --kc-ink: #1b1d29;
+  --kc-ink-2: #2c2f3e;
+  --kc-muted: #6b7080;
+  --kc-line: #dde0e8;
+  --kc-amber: #f2a541;
+  --kc-amber-dark: #e5932a;
+  --kc-amber-soft: #fef3e2;
+  --kc-red: #e5484d;
+  --kc-green: #1f9d55;
+  --kc-green-soft: #eaf7ef;
+  --kc-info-soft: #f3f4f8;
+  --kc-font: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.kc-auth-body {
+  font-family: var(--kc-font);
+  background: #fff;
+  color: var(--kc-ink);
+  color-scheme: light;
+}
+
+.kc-auth {
+  display: grid;
+  grid-template-columns: minmax(380px, 41%) 1fr;
+  min-height: 100vh;
+}
+
+/* --- panneau sombre de gauche --- */
+.kc-auth__aside {
+  background: var(--kc-ink);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 56px;
+}
+.kc-auth__logo {
+  color: #fff;
+}
+.kc-auth__bubbles {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 520px;
+}
+.kc-bubble {
+  max-width: 80%;
+  padding: 12px 22px;
+  border-radius: 16px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.kc-bubble--in {
+  align-self: flex-start;
+  background: var(--kc-ink-2);
+}
+.kc-bubble--out {
+  align-self: flex-end;
+  background: var(--kc-amber);
+  color: var(--kc-ink);
+}
+.kc-auth__claim {
+  margin-top: 56px;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.kc-auth__pitch {
+  margin-top: 16px;
+  max-width: 46ch;
+  color: #b9bccb;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* --- colonne du formulaire --- */
+.kc-auth__main {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px;
+}
+.kc-auth__logo-mobile {
+  display: none;
+  color: var(--kc-ink);
+}
+.kc-auth__panel {
+  margin: auto;
+  width: 100%;
+  max-width: 462px;
+  padding: 24px 0;
+}
+.kc-auth__panel--center {
+  text-align: center;
+}
+
+.kc-title {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.kc-sub {
+  margin-top: 8px;
+  color: var(--kc-muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.kc-sub strong {
+  color: var(--kc-ink);
+  font-weight: 700;
+}
+
+.kc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+/* champs (on réutilise les composants field.* du kit) */
+.kc-auth .field {
+  gap: 8px;
+}
+.kc-auth .field__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--kc-ink);
+}
+.kc-auth .field__input {
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--kc-line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--kc-ink);
+  font-size: 16px;
+  box-shadow: none;
+}
+.kc-auth .field__input::placeholder {
+  color: #a3a7b5;
+}
+.kc-auth .field__input:focus {
+  border-color: var(--kc-amber);
+  box-shadow: 0 0 0 3px rgba(242, 165, 65, 0.25);
+}
+.kc-auth .field__input[data-invalid='true'] {
+  border-color: var(--kc-red);
+  box-shadow: none;
+}
+.kc-auth .field__input[data-invalid='true']:focus {
+  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18);
+}
+.kc-auth .field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--kc-red);
+  font-size: 14px;
+}
+.kc-auth .field__error::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 8v4M12 16h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 8v4M12 16h.01'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* mot de passe + œil */
+.kc-pw__box {
+  position: relative;
+}
+.kc-pw__box .field__input {
+  width: 100%;
+  padding-right: 52px;
+}
+.kc-pw__eye {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--kc-muted);
+}
+.kc-pw__eye:hover {
+  color: var(--kc-ink);
+}
+.kc-pw__eye span {
+  display: flex;
+}
+.kc-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--kc-muted);
+}
+.kc-hint--ok {
+  color: var(--kc-green);
+}
+.kc-hint span {
+  display: flex;
+}
+
+/* boutons */
+.kc-auth .btn {
+  height: 50px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+.kc-auth .btn--primary {
+  background: var(--kc-amber);
+  color: var(--kc-ink);
+}
+.kc-auth .btn--primary:hover {
+  background: var(--kc-amber-dark);
+  opacity: 1;
+}
+.kc-auth .btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* liens */
+.kc-link {
+  color: var(--kc-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.kc-link--muted {
+  color: var(--kc-muted);
+}
+.kc-link:hover {
+  color: var(--kc-amber-dark);
+}
+.kc-foot {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--kc-muted);
+}
+
+/* bandeaux de message (succès / erreur) */
+.kc-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+.kc-banner + .kc-form {
+  margin-top: 20px;
+}
+.kc-banner span {
+  display: flex;
+}
+.kc-banner--ok {
+  background: var(--kc-green-soft);
+  color: var(--kc-green);
+}
+.kc-banner--err {
+  background: #fdecec;
+  color: #c2353a;
+}
+
+/* page 03 : vérifie ta boîte mail */
+.kc-envelope {
+  width: 132px;
+  height: 132px;
+  margin: 0 auto 28px;
+  border-radius: 50%;
+  background: var(--kc-amber-soft);
+  display: grid;
+  place-items: center;
+}
+.kc-info {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 32px;
+  padding: 18px 24px;
+  border-radius: 14px;
+  background: var(--kc-info-soft);
+  text-align: left;
+}
+.kc-info__icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dde3f5;
+  color: #4a5578;
+}
+.kc-info__title {
+  font-weight: 600;
+  font-size: 16px;
+}
+.kc-info__text {
+  color: var(--kc-muted);
+  font-size: 15px;
+}
+
+/* --- téléphone et petite tablette : on garde seulement le formulaire --- */
+@media (max-width: 880px) {
+  .kc-auth {
+    grid-template-columns: 1fr;
+  }
+  .kc-auth__aside {
+    display: none;
+  }
+  .kc-auth__main {
+    padding: 24px 16px;
+  }
+  .kc-auth__logo-mobile {
+    display: block;
+  }
+  .kc-title {
+    font-size: 28px;
+  }
+}
+
+/* --- logo : la bonne version selon le thème --- */
+.kc-logo__light {
+  display: block;
+}
+.kc-logo__dark {
+  display: none;
+}
+:root[data-theme='dark'] .kc-logo__light {
+  display: none;
+}
+:root[data-theme='dark'] .kc-logo__dark {
+  display: block;
+}

@@ -3,34 +3,49 @@ import { loginValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 /**
- * SessionController handles user authentication and session management.
- * It provides methods for displaying the login page, authenticating users,
- * and logging out.
+ * Connexion et déconnexion (écran 02).
  */
 export default class SessionController {
   /**
-   * Display the login page
+   * Affiche le formulaire de connexion.
    */
   async create({ view }: HttpContext) {
     return view.render('pages/auth/login')
   }
 
   /**
-   * Authenticate user credentials and create a new session
+   * Vérifie l'e-mail et le mot de passe, puis ouvre la session.
+   * Un compte non confirmé est refusé (RG4).
    */
-  async store({ request, auth, response }: HttpContext) {
+  async store({ request, auth, response, session }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
-    const user = await User.verifyCredentials(email, password)
+
+    let user: User
+    try {
+      user = await User.verifyCredentials(email, password)
+    } catch {
+      // Message volontairement vague : on ne dit pas si c'est l'e-mail ou le mot de passe qui est faux
+      session.flashExcept(['password'])
+      session.flash('error', 'Adresse e-mail ou mot de passe incorrect.')
+      return response.redirect().back()
+    }
+
+    if (!user.isVerified) {
+      session.put('pending_email', user.email)
+      session.flash('error', "Confirme d'abord ton adresse e-mail : le lien est dans ta boîte de réception.")
+      return response.redirect().toRoute('verification.notice')
+    }
 
     await auth.use('web').login(user)
-    response.redirect().toRoute('dashboard')
+    return response.redirect().toRoute('dashboard')
   }
 
   /**
-   * Log out the current user and destroy their session
+   * Ferme la session.
    */
-  async destroy({ auth, response }: HttpContext) {
+  async destroy({ auth, response, session }: HttpContext) {
     await auth.use('web').logout()
-    response.redirect().toRoute('session.create')
+    session.flash('success', 'Tu es déconnecté.')
+    return response.redirect().toRoute('session.create')
   }
 }

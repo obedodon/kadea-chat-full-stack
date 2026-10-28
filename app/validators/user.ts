@@ -24,3 +24,20 @@ export const loginValidator = vine.create({
   email: email(),
   password: vine.string(),
 })
+
+/**
+ * Formulaires qui ne demandent qu'une adresse e-mail
+ * (renvoi de la confirmation, mot de passe oublié)
+ */
+export const emailValidator = vine.create({
+  email: email(),
+})
+
+/**
+ * Formulaire « Nouveau mot de passe »
+ */
+export const resetPasswordValidator = vine.create({
+  token: vine.string(),
+  password: password(),
+  passwordConfirmation: password().sameAs('password'),
+})

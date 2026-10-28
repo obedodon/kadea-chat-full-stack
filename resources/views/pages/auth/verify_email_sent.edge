@@ -1,0 +1,65 @@
+@layouts.auth({ title: 'Vérifie ta boîte mail — Kadea Chat', center: true })
+  <div class="kc-envelope" aria-hidden="true">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <path d="M32 6v8M20 10l4 6M44 10l-4 6" stroke="#F2A541" stroke-width="3.5" stroke-linecap="round" />
+      <rect x="10" y="24" width="44" height="32" rx="6" fill="#F2A541" />
+      <path d="M14 30l18 13 18-13" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <h1 class="kc-title">Vérifie ta boîte mail</h1>
+  @if(email)
+    <p class="kc-sub">
+      On a envoyé un lien de confirmation à<br /><strong>{{ email }}</strong>.<br />
+      Clique dessus pour activer ton compte.<br />Il reste valable 24 heures.
+    </p>
+  @else
+    <p class="kc-sub">
+      On t'a envoyé un lien de confirmation par e-mail.<br />
+      Clique dessus pour activer ton compte. Il reste valable 24 heures.
+    </p>
+  @end
+  @include('partials/auth_flash')
+
+  <div class="kc-info">
+    <span class="kc-info__icon">
+      @svg('lucide:info', { width: 20, height: 20 })
+    </span>
+    <div>
+      <p class="kc-info__title">Rien reçu ?</p>
+      <p class="kc-info__text">Regarde dans tes spams, ou renvoie l'e-mail.</p>
+    </div>
+  </div>
+
+  @form({
+    route: 'verification.resend',
+    method: 'POST',
+    class: 'kc-form',
+    style: 'margin-top: 24px; text-align: left;',
+    'x-data': '{ submitting: false }',
+    'x-on:submit': 'submitting = true',
+  })
+    @if(email)
+      <input type="hidden" name="email" value="{{ email }}" />
+    @else
+      @field.root({ name: 'email' })
+        @!field.label({ text: 'Adresse e-mail' })
+        @!input.control({ type: 'email', autocomplete: 'email', placeholder: 'grace@exemple.com' })
+        @!field.error()
+      @end
+    @end
+    @!button({
+      text: "Renvoyer l'e-mail",
+      type: 'submit',
+      block: true,
+      'x-bind:disabled': 'submitting',
+      'x-text': "submitting ? 'Envoi…' : 'Renvoyer l\\'e-mail'",
+    })
+  @end
+
+  <p class="kc-foot">
+    @link({ route: 'session.create', class: 'kc-link kc-link--muted', style: 'text-decoration: none;' })
+      Retour à la connexion
+    @end
+  </p>
+@end

@@ -1,61 +1,49 @@
-@layouts.auth()
-  <h1 class="auth__title">Create your account</h1>
-  <p class="auth__sub">Start building with the starter kit.</p>
+@layouts.auth({ title: 'Créer un compte — Kadea Chat' })
+  <h1 class="kc-title">Créer ton compte</h1>
+  <p class="kc-sub">Ça prend une minute. On t'enverra un lien de confirmation.</p>
+  @include('partials/auth_flash')
+
   @form({
     route: 'new_account.store',
     method: 'POST',
-    class: 'auth__form',
+    class: 'kc-form',
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
     @field.root({ name: 'fullName' })
-      @!field.label({ text: 'Full name' })
-      @!input.control({ autocomplete: 'name', placeholder: 'Ada Lovelace' })
+      @!field.label({ text: 'Nom complet' })
+      @!input.control({ autocomplete: 'name', placeholder: 'Grâce Mbuyi' })
       @!field.error()
     @end
     @field.root({ name: 'email' })
-      @!field.label({ text: 'Email' })
-      @!input.control({
-        type: 'email',
-        autocomplete: 'email',
-        placeholder: 'you@example.com',
-      })
+      @!field.label({ text: 'Adresse e-mail' })
+      @!input.control({ type: 'email', autocomplete: 'email', placeholder: 'grace@exemple.com' })
       @!field.error()
     @end
     @field.root({ name: 'password' })
-      @!field.label({ text: 'Password' })
-      @!input.control({
-        type: 'password',
-        autocomplete: 'new-password',
-        placeholder: '••••••••',
-      })
+      @!field.label({ text: 'Mot de passe' })
+      @!input.password({ autocomplete: 'new-password', placeholder: '••••••••', hint: '8 caractères minimum' })
       @!field.error()
     @end
     @field.root({ name: 'passwordConfirmation' })
-      @!field.label({ text: 'Confirm password' })
-      @!input.control({
-        type: 'password',
-        autocomplete: 'new-password',
-        placeholder: '••••••••',
-      })
+      @!field.label({ text: 'Confirmer le mot de passe' })
+      @!input.password({ autocomplete: 'new-password', placeholder: '••••••••' })
       @!field.error()
     @end
     @!button({
-      text: 'Create account',
+      text: 'Créer mon compte',
       type: 'submit',
       block: true,
-      style: 'margin-top: 4px;',
+      style: 'margin-top: 6px;',
       'x-bind:disabled': 'submitting',
-      'x-text': "submitting ? 'One moment…' : 'Create account'",
+      'x-text': "submitting ? 'Création…' : 'Créer mon compte'",
     })
   @end
 
-  <p class="auth__foot">
-    
-    Already have an account?
-
-    @link({ route: 'session.create', class: 'il' })
-      Sign in
+  <p class="kc-foot">
+    Déjà un compte ?
+    @link({ route: 'session.create', class: 'kc-link' })
+      Se connecter
     @end
   </p>
 @end
