@@ -1,0 +1,117 @@
+{{-- 08 · Panneau « Infos du groupe ». Variable : group (voir ConversationListService.groupInfo) --}}
+<aside class="kc-panel" x-show="info" x-cloak x-transition.opacity aria-label="Infos du groupe">
+  <header class="kc-panel__head">
+    <h2>Infos du groupe</h2>
+    <button type="button" class="kc-icon-btn" x-on:click="info = false" aria-label="Fermer">
+      @svg('lucide:x', { width: 22, height: 22 })
+    </button>
+  </header>
+
+  <div class="kc-panel__body">
+    <div class="kc-panel__id">
+      <span class="kc-avatar kc-avatar--lg kc-avatar--blue" aria-hidden="true">
+        @svg('lucide:users', { width: 40, height: 40 })
+      </span>
+      <h3>{{ group.name }}</h3>
+      <p>{{ group.firstNames }}</p>
+      <p>Groupe · {{ group.members.length }} membres</p>
+    </div>
+
+    <div class="kc-panel__section" x-data="{ editing: false }">
+      <div x-show="!editing" class="kc-panel__desc">
+        <p>{{ group.description || 'Aucune description.' }}</p>
+        @if(group.canManage)
+          <button type="button" class="kc-icon-btn" x-on:click="editing = true" aria-label="Modifier le nom et la description">
+            @svg('lucide:pencil', { width: 18, height: 18 })
+          </button>
+        @end
+      </div>
+      @if(group.canManage)
+        @form({ route: 'groups.update', routeParams: { id: group.id }, method: 'POST', class: 'kc-panel__form', 'x-show': 'editing', 'x-cloak': true })
+          <label class="kc-label" for="edit-group-name">Nom du groupe</label>
+          <input id="edit-group-name" class="kc-input" type="text" name="name" value="{{ group.name }}" required minlength="2" maxlength="80" />
+          <label class="kc-label" for="edit-group-description">Description</label>
+          <textarea id="edit-group-description" class="kc-input kc-input--area" name="description" maxlength="500" rows="3">{{ group.description }}</textarea>
+          <div class="kc-panel__actions">
+            <button type="button" class="kc-btn kc-btn--outline kc-btn--sm" x-on:click="editing = false">Annuler</button>
+            <button type="submit" class="kc-btn kc-btn--primary kc-btn--sm">Enregistrer</button>
+          </div>
+        @end
+      @end
+    </div>
+
+    <div class="kc-panel__section">
+      <h4 class="kc-panel__title">Membres ({{ group.members.length }})</h4>
+      @if(group.canManage)
+        <button type="button" class="kc-member kc-member--action" x-on:click="$dispatch('open-add-members')">
+          <span class="kc-member__icon">
+            @svg('lucide:circle-plus', { width: 24, height: 24 })
+          </span>
+          Ajouter des membres
+        </button>
+      @end
+      <ul class="kc-members">
+        @each(member in group.members)
+          <li class="kc-member">
+            <span class="kc-avatar kc-avatar--xs kc-avatar--{{ member.tone }}" aria-hidden="true">{{ member.initials }}</span>
+            <span class="kc-member__name">{{ member.fullName }}{{ member.isMe ? ' (toi)' : '' }}</span>
+            @if(member.isAdmin)
+              <span class="kc-member__role">Admin</span>
+            @end
+            @if(group.canManage && !member.isMe)
+              @form({
+                route: 'groups.members.remove',
+                routeParams: { id: group.id, userId: member.id },
+                method: 'POST',
+                'x-data': '',
+                'x-on:submit': `if (!confirm('Retirer ${member.fullName.replace(/'/g, ' ')} du groupe ?')) $event.preventDefault()`,
+              })
+                <button type="submit" class="kc-icon-btn kc-member__remove" aria-label="Retirer {{ member.fullName }} du groupe" title="Retirer du groupe">
+                  @svg('lucide:user-minus', { width: 18, height: 18 })
+                </button>
+              @end
+            @end
+          </li>
+        @end
+      </ul>
+    </div>
+
+    @form({
+      route: 'groups.leave',
+      routeParams: { id: group.id },
+      method: 'POST',
+      class: 'kc-panel__section',
+      'x-data': '',
+      'x-on:submit': "if (!confirm('Quitter ce groupe ?')) $event.preventDefault()",
+    })
+      <button type="submit" class="kc-member kc-member--danger">
+        <span class="kc-member__icon">
+          @svg('lucide:log-out', { width: 22, height: 22 })
+        </span>
+        Quitter le groupe
+      </button>
+    @end
+  </div>
+</aside>
+
+@if(group.canManage)
+  {{-- Fenêtre « Ajouter des membres » : les membres actuels sont exclus de la recherche --}}
+  <div x-data="peoplePicker([{{ group.memberIds.join(',') }}])" x-on:open-add-members.window="show()" x-on:keydown.escape.window="open && close()">
+    <div class="kc-modal" x-show="open" x-cloak x-transition.opacity>
+      <div class="kc-modal__backdrop" x-on:click="close()"></div>
+      <div class="kc-modal__card" role="dialog" aria-modal="true" aria-labelledby="add-members-title">
+        <button type="button" class="kc-modal__close" x-on:click="close()" aria-label="Fermer">
+          @svg('lucide:x', { width: 24, height: 24 })
+        </button>
+        <h2 id="add-members-title" class="kc-modal__title">Ajouter des membres</h2>
+        <p class="kc-modal__sub">Choisis les personnes à ajouter à « {{ group.name }} ».</p>
+        @form({ route: 'groups.members.add', routeParams: { id: group.id }, method: 'POST', class: 'kc-modal__form' })
+          @include('partials/people_picker')
+          <button type="submit" class="kc-btn kc-btn--primary kc-btn--block" x-bind:disabled="chosen.length === 0">
+            Ajouter au groupe
+          </button>
+        @end
+      </div>
+    </div>
+  </div>
+@end

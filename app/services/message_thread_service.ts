@@ -2,6 +2,7 @@ import type Message from '#models/message'
 import ConversationMember from '#models/conversation_member'
 import type User from '#models/user'
 import { formatDayLabel, formatTime } from '#services/date_format'
+import { avatarTone } from '#services/avatar'
 
 export type MessageView = ReturnType<typeof MessageThreadService.present>
 
@@ -24,10 +25,10 @@ export default class MessageThreadService {
         days.push(day)
       }
 
-      // Dans un groupe, le nom de l'auteur s'affiche au début de chaque série de messages
+      // Dans un groupe, l'avatar et le nom de l'auteur ne s'affichent qu'au début d'une série
       const previous = day.messages.at(-1)
-      const showName = isGroup && previous?.senderId !== message.senderId
-      day.messages.push(this.present(message, viewer, showName, readUpTo))
+      const followup = previous?.senderId === message.senderId
+      day.messages.push(this.present(message, viewer, isGroup, followup, readUpTo))
     }
 
     return days
@@ -36,7 +37,13 @@ export default class MessageThreadService {
   /**
    * Un message en données simples pour la vue partials/message.edge.
    */
-  static present(message: Message, viewer: User, showName: boolean, readUpTo: number | null) {
+  static present(
+    message: Message,
+    viewer: User,
+    isGroup: boolean,
+    followup: boolean,
+    readUpTo: number | null
+  ) {
     const mine = message.senderId === viewer.id
     const sentAt = message.createdAt.toMillis()
     return {
@@ -47,7 +54,12 @@ export default class MessageThreadService {
       time: formatTime(message.createdAt),
       dayLabel: formatDayLabel(message.createdAt),
       senderId: message.senderId,
-      senderName: showName && !mine ? message.sender.fullName : null,
+      // Dans un groupe, les messages des autres portent l'avatar et le nom de leur auteur
+      inGroup: isGroup && !mine,
+      followup,
+      senderName: message.sender.fullName,
+      senderInitials: message.sender.initials,
+      senderTone: avatarTone(message.senderId),
       sentAt,
       // Accusé de lecture : mon message a été lu par au moins une autre personne
       read: mine && readUpTo !== null && sentAt <= readUpTo,

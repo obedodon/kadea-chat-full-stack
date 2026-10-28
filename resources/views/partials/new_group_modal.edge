@@ -1,0 +1,28 @@
+{{-- Fenêtre « Nouveau groupe » : un nom, une description facultative, puis les membres --}}
+<div x-data="peoplePicker([])" x-on:open-new-group.window="show()" x-on:keydown.escape.window="open && close()">
+  <div class="kc-modal" x-show="open" x-cloak x-transition.opacity>
+    <div class="kc-modal__backdrop" x-on:click="close()"></div>
+    <div class="kc-modal__card" role="dialog" aria-modal="true" aria-labelledby="new-group-title">
+      <button type="button" class="kc-modal__close" x-on:click="close()" aria-label="Fermer">
+        @svg('lucide:x', { width: 24, height: 24 })
+      </button>
+      <h2 id="new-group-title" class="kc-modal__title">Nouveau groupe</h2>
+      <p class="kc-modal__sub">Donne un nom au groupe, puis choisis ses membres.</p>
+
+      @form({ route: 'groups.store', method: 'POST', class: 'kc-modal__form' })
+        <label class="kc-label" for="group-name">Nom du groupe</label>
+        <input id="group-name" class="kc-input" type="text" name="name" required minlength="2" maxlength="80" placeholder="Capstone Matin" />
+
+        <label class="kc-label" for="group-description">Description <span>(facultatif)</span></label>
+        <textarea id="group-description" class="kc-input kc-input--area" name="description" maxlength="500" rows="2" placeholder="Groupe de travail pour le projet Capstone"></textarea>
+
+        <p class="kc-label">Membres</p>
+        @include('partials/people_picker')
+
+        <button type="submit" class="kc-btn kc-btn--primary kc-btn--block" x-bind:disabled="chosen.length === 0">
+          Créer le groupe
+        </button>
+      @end
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 @layouts.chat({ title: `${header.title} — Kadea Chat`, conversations, activeId: header.id, open: true })
+  <div class="kc-view" x-data="{ info: false }" x-bind:class="{ 'has-panel': info }">
   <header class="kc-main__bar kc-thread__head">
     <a href="{{ route('conversations.index') }}" class="kc-icon-btn kc-back" aria-label="Retour aux discussions">
       @svg('lucide:arrow-left', { width: 22, height: 22 })
@@ -16,6 +17,18 @@
         <p class="kc-thread__sub">{{ header.subtitle }}</p>
       @end
     </div>
+    @if(group)
+      <button
+        type="button"
+        class="kc-icon-btn kc-info-btn"
+        x-bind:class="{ 'is-on': info }"
+        x-on:click="info = !info"
+        x-bind:aria-expanded="info"
+        aria-label="Infos du groupe"
+      >
+        @svg('lucide:info', { width: 24, height: 24 })
+      </button>
+    @end
   </header>
 
   <section class="kc-thread" data-thread x-data x-init="$el.scrollTop = $el.scrollHeight" aria-label="Messages">
@@ -55,4 +68,9 @@
       @svg('lucide:send', { width: 24, height: 24 })
     </button>
   @end
+
+  @if(group)
+    @include('partials/group_info')
+  @end
+  </div>
 @end

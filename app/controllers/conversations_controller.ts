@@ -111,6 +111,7 @@ export default class ConversationsController {
     return view.render('pages/conversations/show', {
       conversations,
       header: ConversationListService.header(conversation, user),
+      group: conversation.isGroup ? ConversationListService.groupInfo(conversation, user) : null,
       days: MessageThreadService.group(messages, user, conversation.isGroup, readUpTo),
     })
   }

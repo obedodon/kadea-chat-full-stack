@@ -1,19 +1,55 @@
-{{-- Un message (écran 07). Variable : message (voir MessageThreadService.present) --}}
-@if(message.deleted)
-  <p class="kc-msg kc-msg--deleted {{ message.mine ? 'kc-msg--mine' : '' }}" data-message-id="{{ message.id }}">
+{{--
+  Un message (écran 07 et 08). Variable : message (voir MessageThreadService.present).
+  Dans un groupe, les messages des autres portent l'avatar et le nom de leur auteur
+  (masqués quand la même personne enchaîne plusieurs messages : « followup »).
+--}}
+@let(classes = [
+  'kc-msg',
+  message.mine ? 'kc-msg--mine' : '',
+  message.read ? 'is-read' : '',
+].filter(Boolean).join(' '))
+
+@if(message.inGroup)
+  <div
+    class="kc-row {{ message.followup ? 'is-followup' : '' }}"
+    data-message-id="{{ message.id }}"
+    data-day-label="{{ message.dayLabel }}"
+    data-sender-id="{{ message.senderId }}"
+  >
+    <span class="kc-avatar kc-avatar--sm kc-avatar--{{ message.senderTone }}" aria-hidden="true">{{ message.senderInitials }}</span>
+    <div class="kc-row__content">
+      <p class="kc-msg__author">{{ message.senderName }}</p>
+      @if(message.deleted)
+        <p class="kc-msg kc-msg--deleted">
+          @svg('lucide:ban', { width: 18, height: 18 })
+          Ce message a été supprimé
+        </p>
+      @else
+        <div class="{{ classes }}">
+          <p class="kc-msg__body">{{ message.body }}</p>
+          <span class="kc-msg__meta">{{ message.time }}</span>
+        </div>
+      @end
+    </div>
+  </div>
+@elseif(message.deleted)
+  <p
+    class="kc-msg kc-msg--deleted {{ message.mine ? 'kc-msg--mine' : '' }}"
+    data-message-id="{{ message.id }}"
+    data-day-label="{{ message.dayLabel }}"
+    data-sender-id="{{ message.senderId }}"
+  >
     @svg('lucide:ban', { width: 18, height: 18 })
     Ce message a été supprimé
   </p>
 @else
   <div
-    class="kc-msg {{ message.mine ? 'kc-msg--mine' : '' }} {{ message.read ? 'is-read' : '' }}"
+    class="{{ classes }}"
     data-message-id="{{ message.id }}"
     data-day-label="{{ message.dayLabel }}"
+    data-sender-id="{{ message.senderId }}"
     data-sent-at="{{ message.sentAt }}"
   >
-    @if(message.senderName)
-      <p class="kc-msg__author">{{ message.senderName }}</p>
-    @end
     <p class="kc-msg__body">{{ message.body }}</p>
     <span class="kc-msg__meta">
       {{ message.time }}

@@ -11,6 +11,7 @@ export type RealtimeEvent =
   | { type: 'message'; conversationId: number; messageId: number }
   | { type: 'conversation'; conversationId: number }
   | { type: 'read'; conversationId: number; readUpTo: number }
+  | { type: 'removed'; conversationId: number }
 
 export default class RealtimeService {
   /**

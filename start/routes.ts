@@ -89,6 +89,21 @@ router
       .where('id', router.matchers.number())
       .where('messageId', router.matchers.number())
 
+    // 08 · Groupes : création, modification, membres et départ
+    router.post('groups', [controllers.Groups, 'store']).as('groups.store')
+    router
+      .group(() => {
+        router.post('/', [controllers.Groups, 'update']).as('groups.update')
+        router.post('members', [controllers.Groups, 'addMembers']).as('groups.members.add')
+        router
+          .post('members/:userId/remove', [controllers.Groups, 'removeMember'])
+          .as('groups.members.remove')
+          .where('userId', router.matchers.number())
+        router.post('leave', [controllers.Groups, 'leave']).as('groups.leave')
+      })
+      .prefix('groups/:id')
+      .where('id', router.matchers.number())
+
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())

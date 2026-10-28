@@ -26,6 +26,11 @@ export type ScannedRoutes = {
     'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'messages.show': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'messageId': ParamValue} }
+    'groups.store': { paramsTuple?: []; params?: {} }
+    'groups.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'groups.members.add': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'groups.members.remove': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
+    'groups.leave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -68,6 +73,11 @@ export type ScannedRoutes = {
     'password.update': { paramsTuple?: []; params?: {} }
     'conversations.store': { paramsTuple?: []; params?: {} }
     'messages.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'groups.store': { paramsTuple?: []; params?: {} }
+    'groups.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'groups.members.add': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'groups.members.remove': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
+    'groups.leave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
 }

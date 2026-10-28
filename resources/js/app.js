@@ -36,6 +36,16 @@ function appendMessage(html) {
     thread.append(separator)
   }
 
+  // Groupe : si la même personne enchaîne, on masque son avatar et son nom
+  const previous = thread.lastElementChild
+  if (
+    node.classList.contains('kc-row') &&
+    previous?.dataset.senderId === node.dataset.senderId &&
+    previous?.dataset.dayLabel === node.dataset.dayLabel
+  ) {
+    node.classList.add('is-followup')
+  }
+
   // On ne fait défiler que si on était déjà en bas (ou si c'est mon message)
   const nearBottom = thread.scrollHeight - thread.scrollTop - thread.clientHeight < 150
   thread.append(node)
@@ -89,6 +99,12 @@ async function startRealtime() {
   subscription.onMessage(async (event) => {
     if (event.type === 'read') {
       markAsRead(event.conversationId, event.readUpTo)
+      return
+    }
+
+    // Retiré d'un groupe pendant qu'on le regarde : retour à la liste
+    if (event.type === 'removed' && String(event.conversationId) === document.body.dataset.conversationId) {
+      window.location.href = '/conversations'
       return
     }
 
@@ -181,6 +197,66 @@ Alpine.data('newChat', function () {
         // On ignore une réponse arrivée après une frappe plus récente
         if (q !== this.q.trim()) return
         this.results = response.ok ? await response.json() : []
+      } catch {
+        this.results = []
+      }
+      this.searched = true
+    },
+    get countLabel() {
+      const total = this.results.length
+      if (total === 0) return 'Aucune personne trouvée'
+      return total === 1 ? '1 personne trouvée' : `${total} personnes trouvées`
+    },
+  }
+})
+
+/**
+ * Sélection de plusieurs personnes (« Nouveau groupe », « Ajouter des membres »).
+ * exclude : identifiants à ne pas proposer (les membres actuels du groupe).
+ */
+Alpine.data('peoplePicker', function (exclude = []) {
+  return {
+    open: false,
+    q: '',
+    results: [],
+    chosen: [],
+    searched: false,
+    show() {
+      this.open = true
+      this.$nextTick(() => this.$refs.q?.focus())
+    },
+    close() {
+      this.open = false
+      this.clear()
+      this.chosen = []
+    },
+    clear() {
+      this.q = ''
+      this.results = []
+      this.searched = false
+    },
+    isChosen(person) {
+      return this.chosen.some((item) => item.id === person.id)
+    },
+    toggle(person) {
+      this.chosen = this.isChosen(person)
+        ? this.chosen.filter((item) => item.id !== person.id)
+        : [...this.chosen, person]
+    },
+    async search() {
+      const q = this.q.trim()
+      if (q.length < 2) {
+        this.results = []
+        this.searched = false
+        return
+      }
+      try {
+        const response = await fetch(`/users/search?q=${encodeURIComponent(q)}`, {
+          headers: { Accept: 'application/json' },
+        })
+        if (q !== this.q.trim()) return
+        const people = response.ok ? await response.json() : []
+        this.results = people.filter((person) => !exclude.includes(person.id))
       } catch {
         this.results = []
       }
