@@ -41,3 +41,20 @@ export const resetPasswordValidator = vine.create({
   password: password(),
   passwordConfirmation: password().sameAs('password'),
 })
+
+/**
+ * 10 · Ton profil : le nom et, si on en choisit une, la photo (JPG ou PNG, 2 Mo maximum)
+ */
+export const profileValidator = vine.create({
+  fullName: vine.string().trim().minLength(2).maxLength(100),
+  avatar: vine.file({ size: '2mb', extnames: ['jpg', 'jpeg', 'png'] }).optional(),
+})
+
+/**
+ * 10 · Changer son mot de passe : l'actuel est exigé
+ */
+export const changePasswordValidator = vine.create({
+  currentPassword: vine.string(),
+  password: password(),
+  passwordConfirmation: password().sameAs('password'),
+})

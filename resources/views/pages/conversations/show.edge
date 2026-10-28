@@ -4,29 +4,24 @@
     <a href="{{ route('conversations.index') }}" class="kc-icon-btn kc-back" aria-label="Retour aux discussions">
       @svg('lucide:arrow-left', { width: 22, height: 22 })
     </a>
-    @if(header.isGroup)
-      <span class="kc-avatar kc-avatar--md kc-avatar--blue" aria-hidden="true">
-        @svg('lucide:users', { width: 22, height: 22 })
-      </span>
-    @else
-      <span class="kc-avatar kc-avatar--md kc-avatar--{{ header.tone }}" aria-hidden="true">{{ header.initials }}</span>
-    @end
+    @!kcAvatar({ url: header.avatarUrl, initials: header.initials, tone: header.tone, group: header.isGroup, size: 'md' })
     <div class="kc-thread__who">
       <h1 class="kc-thread__title">{{ header.title }}</h1>
       @if(header.subtitle)
         <p class="kc-thread__sub">{{ header.subtitle }}</p>
       @end
     </div>
-    @if(group)
+    @if(group || contact)
       <button
         type="button"
         class="kc-icon-btn kc-info-btn"
         x-bind:class="{ 'is-on': info }"
         x-on:click="info = !info"
         x-bind:aria-expanded="info"
-        aria-label="Infos du groupe"
+        aria-label="{{ group ? 'Infos du groupe' : 'Infos du contact' }}"
+        title="{{ group ? 'Infos du groupe' : 'Infos du contact' }}"
       >
-        @svg('lucide:info', { width: 24, height: 24 })
+        @svg('lucide:ellipsis-vertical', { width: 24, height: 24 })
       </button>
     @end
   </header>
@@ -71,6 +66,8 @@
 
   @if(group)
     @include('partials/group_info')
+  @elseif(contact)
+    @include('partials/contact_info')
   @end
   </div>
 @end

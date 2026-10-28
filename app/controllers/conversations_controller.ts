@@ -112,6 +112,7 @@ export default class ConversationsController {
       conversations,
       header: ConversationListService.header(conversation, user),
       group: conversation.isGroup ? ConversationListService.groupInfo(conversation, user) : null,
+      contact: conversation.isGroup ? null : ConversationListService.contactInfo(conversation, user),
       days: MessageThreadService.group(messages, user, conversation.isGroup, readUpTo),
     })
   }

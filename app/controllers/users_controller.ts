@@ -34,6 +34,7 @@ export default class UsersController {
         email: person.email,
         initials: person.initials,
         tone: avatarTone(person.id),
+        avatarUrl: person.avatarUrl,
       }))
     )
   }

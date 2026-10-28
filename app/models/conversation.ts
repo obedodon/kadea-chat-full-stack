@@ -40,6 +40,11 @@ export default class Conversation extends ConversationSchema {
     )
   }
 
+  /** Adresse de la photo du groupe, ou null (on affiche alors l'icône de groupe). */
+  get avatarUrl() {
+    return this.avatarPath ? `/avatars/${this.avatarPath}` : null
+  }
+
   get isGroup() {
     return this.type === 'group'
   }

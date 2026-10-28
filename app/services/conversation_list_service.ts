@@ -1,7 +1,7 @@
 import Conversation from '#models/conversation'
 import type Message from '#models/message'
 import type User from '#models/user'
-import { formatListTime } from '#services/date_format'
+import { APP_ZONE, formatListTime } from '#services/date_format'
 import { avatarTone } from '#services/avatar'
 
 const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp)$/i
@@ -52,6 +52,7 @@ export default class ConversationListService {
       isGroup: conversation.isGroup,
       initials: other?.initials ?? '?',
       tone: avatarTone(other?.id ?? conversation.id),
+      avatarUrl: conversation.isGroup ? conversation.avatarUrl : (other?.avatarUrl ?? null),
       preview: this.previewOf(last, viewer, conversation.isGroup),
       time: formatListTime(last?.createdAt ?? conversation.createdAt),
       unread: Number(conversation.$extras.unread_count ?? 0),
@@ -90,6 +91,7 @@ export default class ConversationListService {
       isGroup: conversation.isGroup,
       initials: other?.initials ?? '?',
       tone: avatarTone(other?.id ?? conversation.id),
+      avatarUrl: conversation.isGroup ? conversation.avatarUrl : (other?.avatarUrl ?? null),
       subtitle: conversation.isGroup
         ? `${conversation.participants.length} membres : ${this.firstNames(conversation)}`
         : (other?.email ?? ''),
@@ -107,6 +109,7 @@ export default class ConversationListService {
         fullName: participant.fullName,
         initials: participant.initials,
         tone: avatarTone(participant.id),
+        avatarUrl: participant.avatarUrl,
         isAdmin: participant.$extras.pivot_role === 'admin',
         isMe: participant.id === viewer.id,
       }))
@@ -116,11 +119,28 @@ export default class ConversationListService {
     return {
       id: conversation.id,
       name: conversation.name ?? '',
+      avatarUrl: conversation.avatarUrl,
       description: conversation.description ?? '',
       firstNames: this.firstNames(conversation),
       members,
       memberIds: members.map((member) => member.id),
       canManage: members.some((member) => member.isMe && member.isAdmin),
+    }
+  }
+
+  /**
+   * Panneau « Infos du contact » d'une discussion privée. Nécessite participants (preload).
+   */
+  static contactInfo(conversation: Conversation, viewer: User) {
+    const other = conversation.otherParticipant(viewer)
+    if (!other) return null
+    return {
+      fullName: other.fullName,
+      email: other.email,
+      initials: other.initials,
+      tone: avatarTone(other.id),
+      avatarUrl: other.avatarUrl,
+      memberSince: other.createdAt.setZone(APP_ZONE).setLocale('fr').toFormat('LLLL yyyy'),
     }
   }
 

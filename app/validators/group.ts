@@ -12,3 +12,8 @@ export const updateGroupValidator = vine.create({ name, description })
 
 /** Ajouter des membres (admin uniquement). */
 export const addMembersValidator = vine.create({ memberIds })
+
+/** Photo du groupe (tous les membres peuvent la changer) : JPG ou PNG, 2 Mo maximum. */
+export const groupPhotoValidator = vine.create({
+  avatar: vine.file({ size: '2mb', extnames: ['jpg', 'jpeg', 'png'] }),
+})

@@ -16,7 +16,7 @@
     data-day-label="{{ message.dayLabel }}"
     data-sender-id="{{ message.senderId }}"
   >
-    <span class="kc-avatar kc-avatar--sm kc-avatar--{{ message.senderTone }}" aria-hidden="true">{{ message.senderInitials }}</span>
+    @!kcAvatar({ url: message.senderAvatarUrl, initials: message.senderInitials, tone: message.senderTone, size: 'sm' })
     <div class="kc-row__content">
       <p class="kc-msg__author">{{ message.senderName }}</p>
       @if(message.deleted)

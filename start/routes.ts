@@ -94,6 +94,7 @@ router
     router
       .group(() => {
         router.post('/', [controllers.Groups, 'update']).as('groups.update')
+        router.post('photo', [controllers.Groups, 'photo']).as('groups.photo')
         router.post('members', [controllers.Groups, 'addMembers']).as('groups.members.add')
         router
           .post('members/:userId/remove', [controllers.Groups, 'removeMember'])
@@ -103,6 +104,15 @@ router
       })
       .prefix('groups/:id')
       .where('id', router.matchers.number())
+
+    // 10 · Ton profil
+    router.get('profile', [controllers.Profile, 'show']).as('profile.show')
+    router.post('profile', [controllers.Profile, 'update']).as('profile.update')
+    router.post('profile/password', [controllers.Profile, 'password']).as('profile.password')
+    router
+      .get('avatars/:file', [controllers.Profile, 'avatar'])
+      .as('avatars.show')
+      .where('file', /^[\w-]+\.(jpg|jpeg|png)$/)
 
     router.post('logout', [controllers.Session, 'destroy'])
   })

@@ -6,13 +6,7 @@
     data-search="{{ item.search }}"
     x-show="$el.dataset.search.includes(q.trim().toLowerCase())"
   >
-    @if(item.isGroup)
-      <span class="kc-avatar kc-avatar--blue" aria-hidden="true">
-        @svg('lucide:users', { width: 24, height: 24 })
-      </span>
-    @else
-      <span class="kc-avatar kc-avatar--{{ item.tone }}" aria-hidden="true">{{ item.initials }}</span>
-    @end
+    @!kcAvatar({ url: item.avatarUrl, initials: item.initials, tone: item.tone, group: item.isGroup })
     <span class="kc-item__body">
       <span class="kc-item__row">
         <span class="kc-item__name">{{ item.title }}</span>
