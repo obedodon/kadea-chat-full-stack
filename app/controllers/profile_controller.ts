@@ -1,8 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import app from '@adonisjs/core/services/app'
 import hash from '@adonisjs/core/services/hash'
 import ConversationListService from '#services/conversation_list_service'
-import { AVATARS_DIR, avatarTone, storeAvatar } from '#services/avatar'
+import { avatarPath, avatarTone, storeAvatar } from '#services/avatar'
 import { changePasswordValidator, profileValidator } from '#validators/user'
 import Block from '#models/block'
 import { APP_ZONE } from '#services/date_format'
@@ -81,7 +80,7 @@ export default class ProfileController {
    * Le nom est contrôlé par la route : pas de « ../ » possible.
    */
   async avatar({ params, request, response }: HttpContext) {
-    const filePath = app.makePath(AVATARS_DIR, params.file)
+    const filePath = avatarPath(params.file)
 
     // ?download=1 : le navigateur enregistre la photo au lieu de l'afficher
     if (request.input('download')) {
