@@ -37,7 +37,10 @@
               x-bind:aria-pressed="selected === person.id"
               x-on:click="selected = person.id"
             >
-              <span class="kc-avatar kc-avatar--md" x-bind:class="'kc-avatar--' + person.tone" x-text="person.initials"></span>
+              <span class="kc-avatar kc-avatar--md" x-bind:class="'kc-avatar--' + person.tone">
+          <img class="kc-avatar__img" x-show="person.avatarUrl" x-bind:src="person.avatarUrl" alt="" />
+          <span x-show="!person.avatarUrl" x-text="person.initials"></span>
+        </span>
               <span class="kc-person__text">
                 <strong x-text="person.fullName"></strong>
                 <span x-text="person.email"></span>

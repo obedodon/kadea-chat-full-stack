@@ -60,6 +60,7 @@ export default class MessageThreadService {
       senderName: message.sender.fullName,
       senderInitials: message.sender.initials,
       senderTone: avatarTone(message.senderId),
+      senderAvatarUrl: message.sender.avatarUrl,
       sentAt,
       // Accusé de lecture : mon message a été lu par au moins une autre personne
       read: mine && readUpTo !== null && sentAt <= readUpTo,

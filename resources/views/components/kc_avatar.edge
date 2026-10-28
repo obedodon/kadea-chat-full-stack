@@ -1,0 +1,17 @@
+{{--
+  Avatar : la photo s'il y en a une ; sinon l'icône de groupe (group: true)
+  ou les initiales sur fond pastel.
+  Props : url, initials, tone, group, size ('xs', 'sm', 'md', 'lg', 'xl' ou rien pour la taille normale)
+--}}
+@let(size = $props.get('size'))
+@let(isGroup = $props.get('group'))
+@let(iconSizes = { xs: 18, sm: 20, md: 22, lg: 40, xl: 48 })
+<span class="kc-avatar {{ size ? 'kc-avatar--' + size : '' }} kc-avatar--{{ isGroup ? 'blue' : $props.get('tone', 'amber') }}" aria-hidden="true">
+  @if($props.get('url'))
+    <img class="kc-avatar__img" src="{{ $props.get('url') }}" alt="" loading="lazy" />
+  @elseif(isGroup)
+    @svg('lucide:users', { width: iconSizes[size] || 24, height: iconSizes[size] || 24 })
+  @else
+    {{ $props.get('initials', '?') }}
+  @end
+</span>

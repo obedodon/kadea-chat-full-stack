@@ -4,6 +4,9 @@ build
 tmp/*
 !tmp/.gitkeep
 
+# Fichiers envoyés par les utilisateurs (photos de profil)
+storage
+
 # Secrets
 .env
 .env.local

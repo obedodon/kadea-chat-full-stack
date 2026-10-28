@@ -748,6 +748,13 @@
 .kc-members {
   list-style: none;
 }
+.kc-panel__line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--kc-muted);
+  font-size: 15px;
+}
 .kc-member {
   display: flex;
   align-items: center;
@@ -859,6 +866,185 @@
   }
 }
 
+/* ==========================================================================
+   Photos de profil
+   ========================================================================== */
+.kc-avatar {
+  overflow: hidden;
+}
+.kc-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.kc-avatar--xl {
+  width: 120px;
+  height: 120px;
+  font-size: 36px;
+}
+
+/* ==========================================================================
+   10 · Ton profil
+   ========================================================================== */
+.kc-profile {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 40px;
+}
+.kc-profile > * {
+  max-width: 1040px;
+}
+.kc-profile__title {
+  font-size: 34px;
+  font-weight: 700;
+}
+.kc-profile__sub {
+  margin-top: 4px;
+  color: var(--kc-muted);
+  font-size: 16px;
+}
+.kc-card {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(27, 29, 41, 0.06);
+}
+.kc-card__icon {
+  flex: none;
+  display: flex;
+  color: var(--kc-ink);
+}
+.kc-card__body {
+  flex: 1;
+  min-width: 0;
+}
+.kc-card__title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.kc-card__sub {
+  margin-top: 2px;
+  color: var(--kc-muted);
+  font-size: 14px;
+}
+.kc-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+.kc-profile__info {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+  margin-top: 20px;
+}
+.kc-profile__photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.kc-profile__photo .kc-label {
+  align-self: flex-start;
+  margin-top: 0;
+}
+.kc-photo {
+  position: relative;
+  display: inline-block;
+  margin-top: 8px;
+  cursor: pointer;
+}
+.kc-photo__btn {
+  position: absolute;
+  right: -2px;
+  bottom: 4px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--kc-ink);
+  box-shadow: 0 2px 8px rgba(27, 29, 41, 0.18);
+}
+.kc-photo:hover .kc-photo__btn,
+.kc-photo:focus-within .kc-photo__btn {
+  color: var(--kc-amber-dark);
+}
+.kc-photo__btn--sm {
+  width: 32px;
+  height: 32px;
+  right: -4px;
+  bottom: 0;
+}
+.kc-group-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.kc-group-photo .kc-photo {
+  margin-top: 0;
+}
+.kc-panel__id .kc-group-photo .kc-avatar {
+  margin-bottom: 0;
+}
+.kc-group-photo .field__error {
+  margin-top: 8px;
+  color: #c2353a;
+  font-size: 13px;
+}
+.kc-profile__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.kc-profile__password {
+  margin-top: 20px;
+}
+.kc-profile__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.kc-input--readonly {
+  background: var(--kc-info-soft) !important;
+  color: var(--kc-muted) !important;
+  cursor: not-allowed;
+}
+.kc-profile__logout {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.kc-btn--danger {
+  background: #fff;
+  border: 1px solid #e5a3a6;
+  color: #c2353a;
+}
+.kc-btn--danger:hover {
+  background: #fdecec;
+}
+/* masqué à l'écran mais accessible (le champ fichier, déclenché par la photo) */
+.kc-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .kc-profile__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- téléphone : une seule colonne à la fois --- */
 @media (max-width: 880px) {
   .kc-chat {
@@ -910,5 +1096,22 @@
   }
   .kc-row {
     max-width: 92%;
+  }
+  .kc-profile {
+    padding: 20px 16px 32px;
+  }
+  .kc-profile__title {
+    font-size: 28px;
+  }
+  .kc-card {
+    padding: 18px 16px;
+    gap: 12px;
+  }
+  .kc-card__icon {
+    display: none;
+  }
+  .kc-profile__info {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }

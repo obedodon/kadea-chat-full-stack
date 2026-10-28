@@ -5,9 +5,11 @@ import ConversationMember from '#models/conversation_member'
 import User from '#models/user'
 import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import RealtimeService from '#services/realtime_service'
+import { storeAvatar } from '#services/avatar'
 import {
   addMembersValidator,
   createGroupValidator,
+  groupPhotoValidator,
   updateGroupValidator,
 } from '#validators/group'
 
@@ -59,6 +61,22 @@ export default class GroupsController {
 
     await RealtimeService.notifyMembers(group.id, { type: 'conversation', conversationId: group.id })
     session.flash('success', 'Le groupe a été modifié.')
+    return response.redirect().toRoute('conversations.show', { id: group.id })
+  }
+
+  /**
+   * Change la photo du groupe. Tous les membres en ont le droit (pas seulement les admins).
+   */
+  async photo({ auth, params, request, response, session }: HttpContext) {
+    const user = auth.getUserOrFail()
+    const { group } = await this.findGroup(user, params.id)
+    const { avatar } = await request.validateUsing(groupPhotoValidator)
+
+    group.avatarPath = await storeAvatar(avatar, `g${group.id}`, group.avatarPath)
+    await group.save()
+
+    await RealtimeService.notifyMembers(group.id, { type: 'conversation', conversationId: group.id })
+    session.flash('success', 'Photo du groupe modifiée.')
     return response.redirect().toRoute('conversations.show', { id: group.id })
   }
 

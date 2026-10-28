@@ -123,15 +123,15 @@
 }
 
 /* champs (on réutilise les composants field.* du kit) */
-.kc-auth .field {
+:is(.kc-auth, .kc-profile) .field {
   gap: 8px;
 }
-.kc-auth .field__label {
+:is(.kc-auth, .kc-profile) .field__label {
   font-size: 14px;
   font-weight: 500;
   color: var(--kc-ink);
 }
-.kc-auth .field__input {
+:is(.kc-auth, .kc-profile) .field__input {
   height: 50px;
   padding: 0 16px;
   border: 1px solid var(--kc-line);
@@ -141,28 +141,28 @@
   font-size: 16px;
   box-shadow: none;
 }
-.kc-auth .field__input::placeholder {
+:is(.kc-auth, .kc-profile) .field__input::placeholder {
   color: #a3a7b5;
 }
-.kc-auth .field__input:focus {
+:is(.kc-auth, .kc-profile) .field__input:focus {
   border-color: var(--kc-amber);
   box-shadow: 0 0 0 3px rgba(242, 165, 65, 0.25);
 }
-.kc-auth .field__input[data-invalid='true'] {
+:is(.kc-auth, .kc-profile) .field__input[data-invalid='true'] {
   border-color: var(--kc-red);
   box-shadow: none;
 }
-.kc-auth .field__input[data-invalid='true']:focus {
+:is(.kc-auth, .kc-profile) .field__input[data-invalid='true']:focus {
   box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18);
 }
-.kc-auth .field__error {
+:is(.kc-auth, .kc-profile) .field__error {
   display: flex;
   align-items: center;
   gap: 6px;
   color: var(--kc-red);
   font-size: 14px;
 }
-.kc-auth .field__error::before {
+:is(.kc-auth, .kc-profile) .field__error::before {
   content: '';
   flex: none;
   width: 16px;

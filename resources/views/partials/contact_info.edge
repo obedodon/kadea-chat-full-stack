@@ -1,0 +1,24 @@
+{{-- Panneau « Infos du contact » d'une discussion privée. Variable : contact --}}
+<aside class="kc-panel" x-show="info" x-cloak x-transition.opacity aria-label="Infos du contact">
+  <header class="kc-panel__head">
+    <h2>Infos du contact</h2>
+    <button type="button" class="kc-icon-btn" x-on:click="info = false" aria-label="Fermer">
+      @svg('lucide:x', { width: 22, height: 22 })
+    </button>
+  </header>
+
+  <div class="kc-panel__body">
+    <div class="kc-panel__id">
+      @!kcAvatar({ url: contact.avatarUrl, initials: contact.initials, tone: contact.tone, size: 'lg' })
+      <h3>{{ contact.fullName }}</h3>
+      <p>{{ contact.email }}</p>
+    </div>
+
+    <div class="kc-panel__section">
+      <p class="kc-panel__line">
+        @svg('lucide:calendar', { width: 20, height: 20 })
+        Sur Kadea Chat depuis {{ contact.memberSince }}
+      </p>
+    </div>
+  </div>
+</aside>

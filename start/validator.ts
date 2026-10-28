@@ -34,4 +34,7 @@ vine.messagesProvider = new SimpleMessagesProvider({
   'maxLength': 'Saisis au plus {{ max }} caractères.',
   'sameAs': 'Les deux mots de passe ne correspondent pas.',
   'database.unique': 'Cette adresse est déjà utilisée. Connecte-toi plutôt.',
+  'file': 'Choisis un fichier.',
+  'file.size': 'La photo ne doit pas dépasser {{ size }}.',
+  'file.extname': 'Choisis une image JPG ou PNG.',
 })

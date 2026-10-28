@@ -38,8 +38,10 @@ export class ConversationMemberSchema extends BaseModel {
 }
 
 export class ConversationSchema extends BaseModel {
-  static $columns = ['createdAt', 'createdBy', 'description', 'id', 'lastMessageAt', 'name', 'type', 'updatedAt'] as const
+  static $columns = ['avatarPath', 'createdAt', 'createdBy', 'description', 'id', 'lastMessageAt', 'name', 'type', 'updatedAt'] as const
   $columns = ConversationSchema.$columns
+  @column()
+  declare avatarPath: string | null
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
   @column()

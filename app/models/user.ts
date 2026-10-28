@@ -33,6 +33,13 @@ export default class User extends compose(UserSchema, withAuthFinder(hash)) {
   }
 
   /**
+   * Adresse de la photo de profil, ou null s'il n'y en a pas (on affiche alors les initiales).
+   */
+  get avatarUrl() {
+    return this.avatarPath ? `/avatars/${this.avatarPath}` : null
+  }
+
+  /**
    * Initiales affichées quand il n'y a pas de photo de profil.
    */
   get initials() {

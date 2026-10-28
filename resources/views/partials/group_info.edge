@@ -9,9 +9,33 @@
 
   <div class="kc-panel__body">
     <div class="kc-panel__id">
-      <span class="kc-avatar kc-avatar--lg kc-avatar--blue" aria-hidden="true">
-        @svg('lucide:users', { width: 40, height: 40 })
-      </span>
+      {{-- Tous les membres peuvent changer la photo : le choix d'une image l'envoie aussitôt --}}
+      @form({
+        route: 'groups.photo',
+        routeParams: { id: group.id },
+        method: 'POST',
+        enctype: 'multipart/form-data',
+        class: 'kc-group-photo',
+      })
+        <label class="kc-photo" title="Changer la photo du groupe">
+          @!kcAvatar({ url: group.avatarUrl, group: true, size: 'lg' })
+          <span class="kc-photo__btn kc-photo__btn--sm">
+            @svg('lucide:camera', { width: 16, height: 16 })
+          </span>
+          <input
+            type="file"
+            name="avatar"
+            accept="image/png,image/jpeg"
+            class="kc-sr"
+            aria-label="Changer la photo du groupe"
+            x-data
+            x-on:change="$el.form.submit()"
+          />
+        </label>
+        @field.root({ name: 'avatar' })
+          @!field.error()
+        @end
+      @end
       <h3>{{ group.name }}</h3>
       <p>{{ group.firstNames }}</p>
       <p>Groupe · {{ group.members.length }} membres</p>
@@ -53,7 +77,7 @@
       <ul class="kc-members">
         @each(member in group.members)
           <li class="kc-member">
-            <span class="kc-avatar kc-avatar--xs kc-avatar--{{ member.tone }}" aria-hidden="true">{{ member.initials }}</span>
+            @!kcAvatar({ url: member.avatarUrl, initials: member.initials, tone: member.tone, size: 'xs' })
             <span class="kc-member__name">{{ member.fullName }}{{ member.isMe ? ' (toi)' : '' }}</span>
             @if(member.isAdmin)
               <span class="kc-member__role">Admin</span>

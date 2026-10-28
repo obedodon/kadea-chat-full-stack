@@ -20,6 +20,10 @@
             <strong>{{ auth.user.fullName }}</strong>
             <span>{{ auth.user.email }}</span>
           </p>
+          <a href="{{ route('profile.show') }}" class="kc-menu__item">
+            @svg('lucide:circle-user', { width: 18, height: 18 })
+            Ton profil
+          </a>
           @form({ route: 'session.destroy', method: 'POST' })
             <button type="submit" class="kc-menu__item kc-menu__item--danger">
               @svg('lucide:log-out', { width: 18, height: 18 })
