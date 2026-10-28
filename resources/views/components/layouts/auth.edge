@@ -1,38 +1,41 @@
 <!DOCTYPE html>
-<html
-  lang="fr"
-  data-theme="{{
-    request.plainCookie('app_theme', {
-      defaultValue: 'light',
-      encoded: false,
-    })
-  }}"
->
+<html lang="fr" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ $props.get('title', 'Kadea Chat') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
-  <body>
-    <div class="auth">
-      <div class="auth__form-col">
-        @!logo({ size: 28 })
-        <div class="auth__form-wrap">{{{ await $slots.main() }}}</div>
-        <div style="height: 20px;"></div>
-      </div>
-
-      <aside class="auth__aside">
-        <div class="auth__aside-top">
-          @!themeToggle()
+  <body class="kc-auth-body">
+    <div class="kc-auth">
+      <aside class="kc-auth__aside">
+        <div class="kc-auth__logo">
+          @!logo({ height: 44, onDark: true })
         </div>
 
-        <p class="auth__quote">Tes discussions Kadea, en direct.</p>
+        <div class="kc-auth__bubbles" aria-hidden="true">
+          <p class="kc-bubble kc-bubble--in">On se retrouve sur Kadea Chat ?</p>
+          <p class="kc-bubble kc-bubble--out">J'arrive, je crée mon compte.</p>
+        </div>
 
-        <p class="pitch__p">Écris à ta promo, crée des groupes de projet et retrouve tout à chaque connexion.</p>
+        <h2 class="kc-auth__claim">Tes discussions Kadea,<br />en direct.</h2>
+        <p class="kc-auth__pitch">
+          Écris à ta promo, crée des groupes de projet et retrouve tout à chaque connexion.
+        </p>
       </aside>
+
+      <main class="kc-auth__main">
+        <div class="kc-auth__logo-mobile">
+          @!logo({ height: 34 })
+        </div>
+        <div class="{{ $props.get('center') ? 'kc-auth__panel kc-auth__panel--center' : 'kc-auth__panel' }}">
+          {{{ await $slots.main() }}}
+        </div>
+      </main>
     </div>
-    @include('partials/flash_alerts')
   </body>
 </html>

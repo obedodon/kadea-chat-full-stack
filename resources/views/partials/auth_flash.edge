@@ -1,0 +1,17 @@
+{{-- Messages flash affichés dans le formulaire (maquette 02), et non en notification flottante --}}
+@if(flashMessages.has('success'))
+  <div class="kc-banner kc-banner--ok" role="status">
+    <span>
+      @svg('lucide:circle-check', { width: 20, height: 20 })
+    </span>
+    <p>{{ flashMessages.get('success') }}</p>
+  </div>
+@end
+@if(flashMessages.has('error'))
+  <div class="kc-banner kc-banner--err" role="alert">
+    <span>
+      @svg('lucide:circle-alert', { width: 20, height: 20 })
+    </span>
+    <p>{{ flashMessages.get('error') }}</p>
+  </div>
+@end

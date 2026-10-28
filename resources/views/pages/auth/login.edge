@@ -1,32 +1,27 @@
 @layouts.auth({ title: 'Connexion — Kadea Chat' })
-  <h1 class="auth__title">Content de te revoir</h1>
-  <p class="auth__sub">Connecte-toi pour reprendre tes discussions.</p>
+  <h1 class="kc-title">Content de te revoir</h1>
+  <p class="kc-sub">Connecte-toi pour reprendre tes discussions.</p>
+  @include('partials/auth_flash')
+
   @form({
     route: 'session.store',
     method: 'POST',
-    class: 'auth__form',
+    class: 'kc-form',
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
     @field.root({ name: 'email' })
       @!field.label({ text: 'Adresse e-mail' })
-      @!input.control({
-        type: 'email',
-        autocomplete: 'username',
-        placeholder: 'grace@exemple.com',
-      })
+      @!input.control({ type: 'email', autocomplete: 'username', placeholder: 'grace@exemple.com' })
       @!field.error()
     @end
     @field.root({ name: 'password' })
       @!field.label({ text: 'Mot de passe' })
-      @!input.password({
-        autocomplete: 'current-password',
-        placeholder: '••••••••',
-      })
+      @!input.password({ autocomplete: 'current-password', placeholder: '••••••••' })
       @!field.error()
     @end
-    <p style="margin: -4px 0 0; text-align: right;">
-      @link({ route: 'password.forgot', class: 'il' })
+    <p style="margin-top: -6px;">
+      @link({ route: 'password.forgot', class: 'kc-link kc-link--muted' })
         Mot de passe oublié ?
       @end
     </p>
@@ -34,15 +29,15 @@
       text: 'Connexion',
       type: 'submit',
       block: true,
-      style: 'margin-top: 4px;',
+      style: 'margin-top: 6px;',
       'x-bind:disabled': 'submitting',
       'x-text': "submitting ? 'Connexion…' : 'Connexion'",
     })
   @end
 
-  <p class="auth__foot">
+  <p class="kc-foot">
     Pas encore de compte ?
-    @link({ route: 'new_account.create', class: 'il' })
+    @link({ route: 'new_account.create', class: 'kc-link' })
       Créer un compte
     @end
   </p>

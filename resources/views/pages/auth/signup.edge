@@ -1,10 +1,12 @@
 @layouts.auth({ title: 'Créer un compte — Kadea Chat' })
-  <h1 class="auth__title">Créer ton compte</h1>
-  <p class="auth__sub">Ça prend une minute. On t'enverra un lien de confirmation.</p>
+  <h1 class="kc-title">Créer ton compte</h1>
+  <p class="kc-sub">Ça prend une minute. On t'enverra un lien de confirmation.</p>
+  @include('partials/auth_flash')
+
   @form({
     route: 'new_account.store',
     method: 'POST',
-    class: 'auth__form',
+    class: 'kc-form',
     'x-data': '{ submitting: false }',
     'x-on:submit': 'submitting = true',
   })
@@ -15,42 +17,32 @@
     @end
     @field.root({ name: 'email' })
       @!field.label({ text: 'Adresse e-mail' })
-      @!input.control({
-        type: 'email',
-        autocomplete: 'email',
-        placeholder: 'grace@exemple.com',
-      })
+      @!input.control({ type: 'email', autocomplete: 'email', placeholder: 'grace@exemple.com' })
       @!field.error()
     @end
     @field.root({ name: 'password' })
       @!field.label({ text: 'Mot de passe' })
-      @!input.password({
-        autocomplete: 'new-password',
-        placeholder: '8 caractères minimum',
-      })
+      @!input.password({ autocomplete: 'new-password', placeholder: '••••••••', hint: '8 caractères minimum' })
       @!field.error()
     @end
     @field.root({ name: 'passwordConfirmation' })
       @!field.label({ text: 'Confirmer le mot de passe' })
-      @!input.password({
-        autocomplete: 'new-password',
-        placeholder: 'Retape le mot de passe',
-      })
+      @!input.password({ autocomplete: 'new-password', placeholder: '••••••••' })
       @!field.error()
     @end
     @!button({
       text: 'Créer mon compte',
       type: 'submit',
       block: true,
-      style: 'margin-top: 4px;',
+      style: 'margin-top: 6px;',
       'x-bind:disabled': 'submitting',
       'x-text': "submitting ? 'Création…' : 'Créer mon compte'",
     })
   @end
 
-  <p class="auth__foot">
+  <p class="kc-foot">
     Déjà un compte ?
-    @link({ route: 'session.create', class: 'il' })
+    @link({ route: 'session.create', class: 'kc-link' })
       Se connecter
     @end
   </p>
