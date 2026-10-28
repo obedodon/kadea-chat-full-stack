@@ -5,6 +5,7 @@ import ConversationMember from '#models/conversation_member'
 import User from '#models/user'
 import ConversationListService from '#services/conversation_list_service'
 import MessageThreadService from '#services/message_thread_service'
+import RealtimeService from '#services/realtime_service'
 import { startConversationValidator } from '#validators/conversation'
 
 /**
@@ -18,6 +19,17 @@ export default class ConversationsController {
     const user = auth.getUserOrFail()
     const conversations = await ConversationListService.forUser(user)
     return view.render('pages/conversations/index', { conversations })
+  }
+
+  /**
+   * Morceau de page : la liste de gauche seule. Le navigateur la redemande
+   * quand un événement temps réel arrive (nouveau message, nouvelle discussion).
+   */
+  async sidebar({ auth, request, view }: HttpContext) {
+    const user = auth.getUserOrFail()
+    const conversations = await ConversationListService.forUser(user)
+    const activeId = Number(request.input('active')) || null
+    return view.render('partials/chat_list', { conversations, activeId })
   }
 
   /**
@@ -57,6 +69,9 @@ export default class ConversationsController {
       return created
     })
 
+    // Temps réel : la nouvelle discussion apparaît aussitôt dans la liste de l'autre personne
+    RealtimeService.notifyUser(target.id, { type: 'conversation', conversationId: conversation.id })
+
     return response.redirect().toRoute('conversations.show', { id: conversation.id })
   }
 
@@ -87,13 +102,16 @@ export default class ConversationsController {
       .where('conversation_id', conversation.id)
       .where('user_id', user.id)
       .update({ last_read_at: new Date() })
+    // L'autre personne voit ses accusés de lecture passer à l'orange
+    await RealtimeService.notifyRead(conversation.id, user.id)
 
     const conversations = await ConversationListService.forUser(user)
+    const readUpTo = await MessageThreadService.readUpTo(conversation.id, user.id)
 
     return view.render('pages/conversations/show', {
       conversations,
       header: ConversationListService.header(conversation, user),
-      days: MessageThreadService.group(messages, user, conversation.isGroup),
+      days: MessageThreadService.group(messages, user, conversation.isGroup, readUpTo),
     })
   }
 }

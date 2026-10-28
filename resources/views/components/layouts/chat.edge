@@ -8,6 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrfToken }}" />
     <title>{{ $props.get('title', 'Kadea Chat') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +16,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('dumper')
   </head>
-  <body class="kc-chat-body">
+  <body
+    class="kc-chat-body"
+    data-user-id="{{ auth.user.id }}"
+    data-conversation-id="{{ $props.get('activeId') ?? '' }}"
+  >
     <div class="kc-chat {{ $props.get('open') ? 'kc-chat--open' : '' }}">
       @include('partials/chat_sidebar')
       <main class="kc-main">

@@ -36,38 +36,7 @@
     <input type="search" placeholder="Rechercher une discussion" aria-label="Rechercher une discussion" x-model="q" />
   </label>
 
-  <nav class="kc-list" aria-label="Tes discussions">
-    @each(item in conversations)
-      <a
-        href="{{ route('conversations.show', { id: item.id }) }}"
-        class="kc-item {{ item.id === activeId ? 'is-active' : '' }}"
-        data-search="{{ item.search }}"
-        x-show="$el.dataset.search.includes(q.trim().toLowerCase())"
-      >
-        @if(item.isGroup)
-          <span class="kc-avatar kc-avatar--blue" aria-hidden="true">
-            @svg('lucide:users', { width: 24, height: 24 })
-          </span>
-        @else
-          <span class="kc-avatar kc-avatar--{{ item.tone }}" aria-hidden="true">{{ item.initials }}</span>
-        @end
-        <span class="kc-item__body">
-          <span class="kc-item__row">
-            <span class="kc-item__name">{{ item.title }}</span>
-            <span class="kc-item__time {{ item.unread ? 'is-unread' : '' }}">{{ item.time }}</span>
-          </span>
-          <span class="kc-item__row">
-            <span class="kc-item__preview">{{ item.preview }}</span>
-            @if(item.unread)
-              <span class="kc-badge" aria-label="{{ item.unread }} non lus">{{ item.unread }}</span>
-            @end
-          </span>
-        </span>
-      </a>
-    @else
-      <p class="kc-list__empty">
-        Aucune discussion pour l'instant.<br />Démarre-en une avec le bouton ci-dessus.
-      </p>
-    @end
+  <nav class="kc-list" aria-label="Tes discussions" data-chat-list>
+    @include('partials/chat_list')
   </nav>
 </aside>

@@ -10,6 +10,17 @@
 import { middleware } from '#start/kernel'
 import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
+import transmit from '@adonisjs/transmit/services/main'
+
+/**
+ * Routes de Transmit (temps réel). Pour s'abonner à un canal,
+ * il faut être connecté : le canal users/<id> est vérifié dans start/transmit.ts.
+ */
+transmit.registerRoutes((route) => {
+  if (route.getPattern() === '__transmit/subscribe') {
+    route.middleware(middleware.auth())
+  }
+})
 
 /**
  * Accueil : les discussions si on est connecté, sinon la page de connexion.
@@ -55,6 +66,8 @@ router
   .group(() => {
     // 06 · Discussions
     router.get('conversations', [controllers.Conversations, 'index']).as('conversations.index')
+    // Morceau de page : la liste de gauche, rechargée en temps réel
+    router.get('conversations/sidebar', [controllers.Conversations, 'sidebar']).as('conversations.sidebar')
 
     // 09 · Nouvelle discussion : recherche de personnes, puis création
     router.get('users/search', [controllers.Users, 'search']).as('users.search')
@@ -69,6 +82,12 @@ router
       .post('conversations/:id/messages', [controllers.Messages, 'store'])
       .as('messages.store')
       .where('id', router.matchers.number())
+    // Morceau de page : un seul message, affiché quand il arrive en temps réel
+    router
+      .get('conversations/:id/messages/:messageId', [controllers.Messages, 'show'])
+      .as('messages.show')
+      .where('id', router.matchers.number())
+      .where('messageId', router.matchers.number())
 
     router.post('logout', [controllers.Session, 'destroy'])
   })
