@@ -2,6 +2,10 @@ import { UserSchema } from '#database/schema'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
+import { hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import Conversation from '#models/conversation'
+import ConversationMember from '#models/conversation_member'
 
 /**
  * Modèle User : un compte Kadea Chat.
@@ -9,6 +13,18 @@ import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
  * automatiquement avant chaque enregistrement (RG3).
  */
 export default class User extends compose(UserSchema, withAuthFinder(hash)) {
+  /** Ses adhésions (une ligne par conversation dont il est membre). */
+  @hasMany(() => ConversationMember)
+  declare memberships: HasMany<typeof ConversationMember>
+
+  /** Ses conversations, directement. */
+  @manyToMany(() => Conversation, {
+    pivotTable: 'conversation_members',
+    pivotColumns: ['role', 'last_read_at'],
+    pivotTimestamps: { createdAt: 'created_at', updatedAt: false },
+  })
+  declare conversations: ManyToMany<typeof Conversation>
+
   /**
    * Vrai quand l'adresse e-mail a été confirmée (RG4).
    */

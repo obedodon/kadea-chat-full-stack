@@ -1,0 +1,25 @@
+@layouts.chat({ title: 'Discussions — Kadea Chat', conversations })
+  <div class="kc-main__bar"></div>
+  <section class="kc-empty">
+    <svg class="kc-empty__art" width="190" height="150" viewBox="0 0 190 150" fill="none" aria-hidden="true">
+      <path d="M140 12l-6 20M162 30l-18 14M170 60h-22" stroke="#F2A541" stroke-width="5" stroke-linecap="round" />
+      <path d="M78 42h50a20 20 0 0 1 20 20v18a20 20 0 0 1-20 20h-4l4 18-20-18H78a20 20 0 0 1-20-20V62a20 20 0 0 1 20-20z" fill="#FBC98E" />
+      <path d="M36 56h62a22 22 0 0 1 22 22v20a22 22 0 0 1-22 22H58l-20 20 4-20h-6a22 22 0 0 1-22-22V78a22 22 0 0 1 22-22z" fill="#D9DCE3" />
+      <circle cx="46" cy="88" r="6" fill="#A9ADB8" />
+      <circle cx="67" cy="88" r="6" fill="#A9ADB8" />
+      <circle cx="88" cy="88" r="6" fill="#A9ADB8" />
+    </svg>
+    <h1 class="kc-empty__title">Choisis une discussion</h1>
+    <p class="kc-empty__text">Ou démarre-en une nouvelle avec un membre de Kadea Academy.</p>
+    <div class="kc-empty__actions">
+      <button type="button" class="kc-btn kc-btn--primary" x-data x-on:click="$dispatch('open-new-chat')">
+        @svg('lucide:circle-plus', { width: 22, height: 22 })
+        Nouvelle discussion
+      </button>
+      <button type="button" class="kc-btn kc-btn--outline" x-data x-on:click="$dispatch('open-new-group')">
+        @svg('lucide:users', { width: 22, height: 22 })
+        Créer un groupe
+      </button>
+    </div>
+  </section>
+@end

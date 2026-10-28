@@ -37,7 +37,7 @@ export default class SessionController {
     }
 
     await auth.use('web').login(user)
-    return response.redirect().toRoute('dashboard')
+    return response.redirect().toRoute('conversations.index')
   }
 
   /**

@@ -1,0 +1,65 @@
+{{-- 09 · Fenêtre « Nouvelle discussion » : chercher une personne, la choisir, démarrer --}}
+<div x-data="newChat" x-on:open-new-chat.window="show()" x-on:keydown.escape.window="open && close()">
+  <div class="kc-modal" x-show="open" x-cloak x-transition.opacity>
+    <div class="kc-modal__backdrop" x-on:click="close()"></div>
+    <div class="kc-modal__card" role="dialog" aria-modal="true" aria-labelledby="new-chat-title">
+      <button type="button" class="kc-modal__close" x-on:click="close()" aria-label="Fermer">
+        @svg('lucide:x', { width: 24, height: 24 })
+      </button>
+      <h2 id="new-chat-title" class="kc-modal__title">Nouvelle discussion</h2>
+      <p class="kc-modal__sub">Recherche une personne pour démarrer une conversation.</p>
+
+      <label class="kc-finder">
+        @svg('lucide:search', { width: 22, height: 22 })
+        <input
+          x-ref="q"
+          type="text"
+          x-model="q"
+          x-on:input.debounce.250ms="search()"
+          placeholder="Nom ou adresse e-mail"
+          aria-label="Nom ou adresse e-mail"
+          autocomplete="off"
+        />
+        <button type="button" class="kc-finder__clear" x-show="q" x-on:click="clear()" aria-label="Effacer">
+          @svg('lucide:circle-x', { width: 20, height: 20 })
+        </button>
+      </label>
+
+      <p class="kc-modal__count" x-show="searched" x-text="countLabel"></p>
+
+      <ul class="kc-people">
+        <template x-for="person in results" x-bind:key="person.id">
+          <li>
+            <button
+              type="button"
+              class="kc-person"
+              x-bind:class="{ 'is-selected': selected === person.id }"
+              x-bind:aria-pressed="selected === person.id"
+              x-on:click="selected = person.id"
+            >
+              <span class="kc-avatar kc-avatar--md" x-bind:class="'kc-avatar--' + person.tone" x-text="person.initials"></span>
+              <span class="kc-person__text">
+                <strong x-text="person.fullName"></strong>
+                <span x-text="person.email"></span>
+              </span>
+            </button>
+          </li>
+        </template>
+      </ul>
+
+      <p class="kc-modal__note">
+        <span>
+          @svg('lucide:info', { width: 20, height: 20 })
+        </span>
+        Seuls les comptes dont l'adresse e-mail est confirmée apparaissent ici.
+      </p>
+
+      @form({ route: 'conversations.store', method: 'POST' })
+        <input type="hidden" name="userId" x-bind:value="selected" />
+        <button type="submit" class="kc-btn kc-btn--primary kc-btn--block" x-bind:disabled="!selected">
+          Démarrer la discussion
+        </button>
+      @end
+    </div>
+  </div>
+</div>

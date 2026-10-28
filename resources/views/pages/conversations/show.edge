@@ -1,0 +1,76 @@
+@layouts.chat({ title: `${header.title} — Kadea Chat`, conversations, activeId: header.id, open: true })
+  <header class="kc-main__bar kc-thread__head">
+    <a href="{{ route('conversations.index') }}" class="kc-icon-btn kc-back" aria-label="Retour aux discussions">
+      @svg('lucide:arrow-left', { width: 22, height: 22 })
+    </a>
+    @if(header.isGroup)
+      <span class="kc-avatar kc-avatar--md kc-avatar--blue" aria-hidden="true">
+        @svg('lucide:users', { width: 22, height: 22 })
+      </span>
+    @else
+      <span class="kc-avatar kc-avatar--md kc-avatar--{{ header.tone }}" aria-hidden="true">{{ header.initials }}</span>
+    @end
+    <div class="kc-thread__who">
+      <h1 class="kc-thread__title">{{ header.title }}</h1>
+      @if(header.subtitle)
+        <p class="kc-thread__sub">{{ header.subtitle }}</p>
+      @end
+    </div>
+  </header>
+
+  <section class="kc-thread" x-data x-init="$el.scrollTop = $el.scrollHeight" aria-label="Messages">
+    @each(day in days)
+      <p class="kc-day"><span>{{ day.label }}</span></p>
+      @each(message in day.messages)
+        @if(message.deleted)
+          <p class="kc-msg kc-msg--deleted {{ message.mine ? 'kc-msg--mine' : '' }}">
+            @svg('lucide:ban', { width: 18, height: 18 })
+            Ce message a été supprimé
+          </p>
+        @else
+          <div class="kc-msg {{ message.mine ? 'kc-msg--mine' : '' }}">
+            @if(message.senderName)
+              <p class="kc-msg__author">{{ message.senderName }}</p>
+            @end
+            <p class="kc-msg__body">{{ message.body }}</p>
+            <span class="kc-msg__meta">
+              {{ message.time }}
+              @if(message.mine)
+                @svg('lucide:check-check', { width: 16, height: 16 })
+              @end
+            </span>
+          </div>
+        @end
+      @end
+    @else
+      <div class="kc-thread__empty">
+        <p>Aucun message pour l'instant.</p>
+        <p>Écris le premier !</p>
+      </div>
+    @end
+  </section>
+
+  @form({
+    route: 'messages.store',
+    routeParams: { id: header.id },
+    method: 'POST',
+    class: 'kc-composer',
+    'x-data': '{ sending: false }',
+    'x-on:submit': 'sending = true',
+  })
+    <input
+      class="kc-composer__input"
+      type="text"
+      name="body"
+      placeholder="Écrire un message"
+      aria-label="Écrire un message"
+      autocomplete="off"
+      maxlength="2000"
+      required
+      autofocus
+    />
+    <button type="submit" class="kc-send" aria-label="Envoyer" x-bind:disabled="sending">
+      @svg('lucide:send', { width: 24, height: 24 })
+    </button>
+  @end
+@end
