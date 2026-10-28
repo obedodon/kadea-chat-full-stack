@@ -16,7 +16,11 @@ export type ScannedRoutes = {
     'password.email': { paramsTuple?: []; params?: {} }
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'password.update': { paramsTuple?: []; params?: {} }
-    'dashboard': { paramsTuple?: []; params?: {} }
+    'conversations.index': { paramsTuple?: []; params?: {} }
+    'users.search': { paramsTuple?: []; params?: {} }
+    'conversations.store': { paramsTuple?: []; params?: {} }
+    'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'messages.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -27,7 +31,9 @@ export type ScannedRoutes = {
     'verification.verify': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'password.forgot': { paramsTuple?: []; params?: {} }
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
-    'dashboard': { paramsTuple?: []; params?: {} }
+    'conversations.index': { paramsTuple?: []; params?: {} }
+    'users.search': { paramsTuple?: []; params?: {} }
+    'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -37,7 +43,9 @@ export type ScannedRoutes = {
     'verification.verify': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
     'password.forgot': { paramsTuple?: []; params?: {} }
     'password.reset': { paramsTuple: [ParamValue]; params: {'token': ParamValue} }
-    'dashboard': { paramsTuple?: []; params?: {} }
+    'conversations.index': { paramsTuple?: []; params?: {} }
+    'users.search': { paramsTuple?: []; params?: {} }
+    'conversations.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
@@ -45,6 +53,8 @@ export type ScannedRoutes = {
     'verification.resend': { paramsTuple?: []; params?: {} }
     'password.email': { paramsTuple?: []; params?: {} }
     'password.update': { paramsTuple?: []; params?: {} }
+    'conversations.store': { paramsTuple?: []; params?: {} }
+    'messages.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'session.destroy': { paramsTuple?: []; params?: {} }
   }
 }

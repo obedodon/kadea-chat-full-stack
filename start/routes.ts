@@ -11,7 +11,14 @@ import { middleware } from '#start/kernel'
 import { controllers } from '#generated/controllers'
 import router from '@adonisjs/core/services/router'
 
-router.on('/').render('pages/home').as('home')
+/**
+ * Accueil : les discussions si on est connecté, sinon la page de connexion.
+ */
+router
+  .get('/', ({ auth, response }) => {
+    return response.redirect(auth.isAuthenticated ? '/conversations' : '/login')
+  })
+  .as('home')
 
 /**
  * Pages réservées aux visiteurs non connectés (écrans 01 à 05)
@@ -46,7 +53,23 @@ router
  */
 router
   .group(() => {
-    router.on('/dashboard').render('pages/dashboard').as('dashboard')
+    // 06 · Discussions
+    router.get('conversations', [controllers.Conversations, 'index']).as('conversations.index')
+
+    // 09 · Nouvelle discussion : recherche de personnes, puis création
+    router.get('users/search', [controllers.Users, 'search']).as('users.search')
+    router.post('conversations', [controllers.Conversations, 'store']).as('conversations.store')
+
+    // 07 · Une discussion et ses messages (l'identifiant doit être un nombre)
+    router
+      .get('conversations/:id', [controllers.Conversations, 'show'])
+      .as('conversations.show')
+      .where('id', router.matchers.number())
+    router
+      .post('conversations/:id/messages', [controllers.Messages, 'store'])
+      .as('messages.store')
+      .where('id', router.matchers.number())
+
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())

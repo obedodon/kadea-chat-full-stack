@@ -1,0 +1,28 @@
+{{--
+  Mise en page des écrans connectés (06 à 10) :
+  la liste des discussions à gauche, le contenu à droite.
+  Props : title, conversations, activeId (discussion ouverte), open (sur téléphone : afficher le contenu)
+--}}
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ $props.get('title', 'Kadea Chat') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('dumper')
+  </head>
+  <body class="kc-chat-body">
+    <div class="kc-chat {{ $props.get('open') ? 'kc-chat--open' : '' }}">
+      @include('partials/chat_sidebar')
+      <main class="kc-main">
+        {{{ await $slots.main() }}}
+      </main>
+    </div>
+    @include('partials/new_chat_modal')
+    @include('partials/flash_alerts')
+  </body>
+</html>

@@ -1,0 +1,73 @@
+{{-- Colonne de gauche : logo, actions, recherche et liste des discussions (maquette 06) --}}
+@let(conversations = $props.get('conversations', []))
+@let(activeId = $props.get('activeId'))
+<aside class="kc-side" x-data="{ q: '' }">
+  <header class="kc-side__head">
+    @!logo({ height: 34 })
+    <div class="kc-side__actions">
+      <button type="button" class="kc-icon-btn" title="Nouvelle discussion" aria-label="Nouvelle discussion" x-on:click="$dispatch('open-new-chat')">
+        @svg('lucide:message-square-plus', { width: 22, height: 22 })
+      </button>
+      <button type="button" class="kc-icon-btn" title="Nouveau groupe" aria-label="Nouveau groupe" x-on:click="$dispatch('open-new-group')">
+        @svg('lucide:user-plus', { width: 22, height: 22 })
+      </button>
+      <div class="kc-menu" x-data="{ open: false }" x-on:keydown.escape="open = false">
+        <button type="button" class="kc-icon-btn" title="Menu" aria-label="Menu" x-on:click="open = !open" x-bind:aria-expanded="open">
+          @svg('lucide:ellipsis-vertical', { width: 22, height: 22 })
+        </button>
+        <div class="kc-menu__panel" x-show="open" x-cloak x-on:click.outside="open = false">
+          <p class="kc-menu__who">
+            <strong>{{ auth.user.fullName }}</strong>
+            <span>{{ auth.user.email }}</span>
+          </p>
+          @form({ route: 'session.destroy', method: 'POST' })
+            <button type="submit" class="kc-menu__item kc-menu__item--danger">
+              @svg('lucide:log-out', { width: 18, height: 18 })
+              Se déconnecter
+            </button>
+          @end
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <label class="kc-search">
+    @svg('lucide:search', { width: 20, height: 20 })
+    <input type="search" placeholder="Rechercher une discussion" aria-label="Rechercher une discussion" x-model="q" />
+  </label>
+
+  <nav class="kc-list" aria-label="Tes discussions">
+    @each(item in conversations)
+      <a
+        href="{{ route('conversations.show', { id: item.id }) }}"
+        class="kc-item {{ item.id === activeId ? 'is-active' : '' }}"
+        data-search="{{ item.search }}"
+        x-show="$el.dataset.search.includes(q.trim().toLowerCase())"
+      >
+        @if(item.isGroup)
+          <span class="kc-avatar kc-avatar--blue" aria-hidden="true">
+            @svg('lucide:users', { width: 24, height: 24 })
+          </span>
+        @else
+          <span class="kc-avatar kc-avatar--{{ item.tone }}" aria-hidden="true">{{ item.initials }}</span>
+        @end
+        <span class="kc-item__body">
+          <span class="kc-item__row">
+            <span class="kc-item__name">{{ item.title }}</span>
+            <span class="kc-item__time {{ item.unread ? 'is-unread' : '' }}">{{ item.time }}</span>
+          </span>
+          <span class="kc-item__row">
+            <span class="kc-item__preview">{{ item.preview }}</span>
+            @if(item.unread)
+              <span class="kc-badge" aria-label="{{ item.unread }} non lus">{{ item.unread }}</span>
+            @end
+          </span>
+        </span>
+      </a>
+    @else
+      <p class="kc-list__empty">
+        Aucune discussion pour l'instant.<br />Démarre-en une avec le bouton ci-dessus.
+      </p>
+    @end
+  </nav>
+</aside>
