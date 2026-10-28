@@ -3,6 +3,7 @@ import type Message from '#models/message'
 import type User from '#models/user'
 import { APP_ZONE, formatListTime } from '#services/date_format'
 import { avatarTone } from '#services/avatar'
+import BlockService from '#services/block_service'
 
 const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp)$/i
 
@@ -13,11 +14,16 @@ const IMAGE_EXTENSIONS = /\.(png|jpe?g|gif|webp)$/i
  */
 export default class ConversationListService {
   static async forUser(user: User) {
+    const hiddenProfiles = await BlockService.blockersOf(user.id)
     const conversations = await Conversation.visibleTo(user)
       .preload('participants')
       // Seulement le dernier message de chaque conversation, avec son auteur
       .preload('messages', (messages) =>
-        messages.groupOrderBy('messages.created_at', 'desc').groupLimit(1).preload('sender')
+        messages
+          .where(BlockService.visibleMessages(user.id))
+          .groupOrderBy('messages.created_at', 'desc')
+          .groupLimit(1)
+          .preload('sender')
       )
       // Nombre de messages non lus : écrits par les autres, après ma dernière lecture
       .withCount('messages', (messages) =>
@@ -25,6 +31,7 @@ export default class ConversationListService {
           .as('unread_count')
           .whereNot('sender_id', user.id)
           .whereNull('deleted_at')
+          .where('is_blocked', false)
           .whereRaw(
             `messages.created_at > coalesce(
               (select cm.last_read_at from conversation_members cm
@@ -35,14 +42,15 @@ export default class ConversationListService {
       )
       .orderByRaw('coalesce(last_message_at, created_at) desc')
 
-    return conversations.map((conversation) => this.present(conversation, user))
+    return conversations.map((conversation) => this.present(conversation, user, hiddenProfiles))
   }
 
   /**
    * Transforme une conversation en données simples pour la vue.
    */
-  static present(conversation: Conversation, viewer: User) {
+  static present(conversation: Conversation, viewer: User, hiddenProfiles: Set<number>) {
     const other = conversation.isGroup ? null : conversation.otherParticipant(viewer)
+    const hidden = other ? hiddenProfiles.has(other.id) : false
     const title = conversation.titleFor(viewer)
     const last = conversation.messages[0] ?? null
 
@@ -52,7 +60,7 @@ export default class ConversationListService {
       isGroup: conversation.isGroup,
       initials: other?.initials ?? '?',
       tone: avatarTone(other?.id ?? conversation.id),
-      avatarUrl: conversation.isGroup ? conversation.avatarUrl : (other?.avatarUrl ?? null),
+      avatarUrl: conversation.isGroup ? conversation.avatarUrl : hidden ? null : (other?.avatarUrl ?? null),
       preview: this.previewOf(last, viewer, conversation.isGroup),
       time: formatListTime(last?.createdAt ?? conversation.createdAt),
       unread: Number(conversation.$extras.unread_count ?? 0),
@@ -83,7 +91,7 @@ export default class ConversationListService {
   /**
    * En-tête d'une discussion ouverte (maquette 07). Nécessite participants (preload).
    */
-  static header(conversation: Conversation, viewer: User) {
+  static header(conversation: Conversation, viewer: User, hidden = false) {
     const other = conversation.isGroup ? null : conversation.otherParticipant(viewer)
     return {
       id: conversation.id,
@@ -91,10 +99,12 @@ export default class ConversationListService {
       isGroup: conversation.isGroup,
       initials: other?.initials ?? '?',
       tone: avatarTone(other?.id ?? conversation.id),
-      avatarUrl: conversation.isGroup ? conversation.avatarUrl : (other?.avatarUrl ?? null),
+      avatarUrl: conversation.isGroup ? conversation.avatarUrl : hidden ? null : (other?.avatarUrl ?? null),
       subtitle: conversation.isGroup
         ? `${conversation.participants.length} membres : ${this.firstNames(conversation)}`
-        : (other?.email ?? ''),
+        : hidden
+          ? ''
+          : (other?.email ?? ''),
     }
   }
 
@@ -131,16 +141,20 @@ export default class ConversationListService {
   /**
    * Panneau « Infos du contact » d'une discussion privée. Nécessite participants (preload).
    */
-  static contactInfo(conversation: Conversation, viewer: User) {
+  static contactInfo(conversation: Conversation, viewer: User, hidden = false) {
     const other = conversation.otherParticipant(viewer)
     if (!other) return null
+    // Si cette personne m'a bloqué, je ne vois plus son profil : seulement son nom et ses initiales
     return {
+      id: other.id,
       fullName: other.fullName,
-      email: other.email,
+      email: hidden ? null : other.email,
       initials: other.initials,
       tone: avatarTone(other.id),
-      avatarUrl: other.avatarUrl,
-      memberSince: other.createdAt.setZone(APP_ZONE).setLocale('fr').toFormat('LLLL yyyy'),
+      avatarUrl: hidden ? null : other.avatarUrl,
+      memberSince: hidden
+        ? null
+        : other.createdAt.setZone(APP_ZONE).setLocale('fr').toFormat('LLLL yyyy'),
     }
   }
 

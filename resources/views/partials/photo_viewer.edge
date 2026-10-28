@@ -1,0 +1,25 @@
+{{-- Visionneuse : une photo en plein écran, avec Télécharger et Fermer --}}
+<div
+  class="kc-viewer"
+  x-data="photoViewer"
+  x-show="src"
+  x-cloak
+  x-transition.opacity
+  x-on:open-photo.window="show($event.detail)"
+  x-on:keydown.escape.window="close()"
+  x-on:click="close()"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Photo en plein écran"
+>
+  <div class="kc-viewer__bar" x-on:click.stop>
+    <p class="kc-viewer__name" x-text="name"></p>
+    <a class="kc-viewer__btn" x-bind:href="downloadUrl" download aria-label="Télécharger la photo" title="Télécharger">
+      @svg('lucide:download', { width: 22, height: 22 })
+    </a>
+    <button type="button" class="kc-viewer__btn" x-on:click="close()" aria-label="Fermer" title="Fermer">
+      @svg('lucide:x', { width: 24, height: 24 })
+    </button>
+  </div>
+  <img class="kc-viewer__img" x-bind:src="src" x-bind:alt="name" x-on:click.stop />
+</div>

@@ -8,6 +8,7 @@ import type { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import MessageThreadService from '#services/message_thread_service'
 import RealtimeService from '#services/realtime_service'
 import { messageValidator } from '#validators/conversation'
+import BlockService from '#services/block_service'
 
 /**
  * Les messages d'une discussion (écran 07).
@@ -19,33 +20,50 @@ export default class MessagesController {
    * Envoyé par le script de la page → réponse JSON avec le message déjà mis en forme.
    * Envoyé sans JavaScript → simple rechargement de la page.
    */
-  async store({ auth, params, request, response, view }: HttpContext) {
+  async store({ auth, params, request, response, session, view }: HttpContext) {
     const user = auth.getUserOrFail()
     const conversation = await Conversation.visibleTo(user).where('id', params.id).firstOrFail()
+
+    // Blocage : celui qui a bloqué ne peut plus écrire (il doit débloquer d'abord)
+    const block = await BlockService.inPrivateChat(conversation, user.id)
+    if (block?.iBlocked) {
+      if (request.accepts(['html', 'json']) === 'json') {
+        return response.forbidden({ message: 'Débloque cette personne pour lui écrire.' })
+      }
+      session.flash('error', 'Débloque cette personne pour lui écrire.')
+      return response.redirect().toRoute('conversations.show', { id: conversation.id })
+    }
+    // Celui qui est bloqué écrit normalement, mais son message ne sera jamais remis
+    const silenced = Boolean(block?.blockedMe)
+
     const { body } = await request.validateUsing(messageValidator)
 
     const message = await db.transaction(async (trx) => {
       const created = await Message.create(
-        { conversationId: conversation.id, senderId: user.id, body },
+        { conversationId: conversation.id, senderId: user.id, body, isBlocked: silenced },
         { client: trx }
       )
 
-      // La discussion remonte en haut de la liste
-      conversation.useTransaction(trx)
-      conversation.lastMessageAt = created.createdAt
-      await conversation.save()
+      // La discussion remonte en haut de la liste (sauf message non remis : rien ne doit bouger chez l'autre)
+      if (!silenced) {
+        conversation.useTransaction(trx)
+        conversation.lastMessageAt = created.createdAt
+        await conversation.save()
+      }
 
       // Mon propre message ne compte pas comme non lu pour moi
       await this.markAsRead(conversation.id, user, created.createdAt.toJSDate(), trx)
       return created
     })
 
-    // Temps réel : chaque membre est prévenu (y compris mes autres onglets ouverts)
-    await RealtimeService.notifyMembers(conversation.id, {
-      type: 'message',
-      conversationId: conversation.id,
-      messageId: message.id,
-    })
+    // Temps réel : chaque membre est prévenu (y compris mes autres onglets ouverts).
+    // Message non remis : seul l'expéditeur est prévenu.
+    const event = { type: 'message' as const, conversationId: conversation.id, messageId: message.id }
+    if (silenced) {
+      RealtimeService.notifyUser(user.id, event)
+    } else {
+      await RealtimeService.notifyMembers(conversation.id, event)
+    }
 
     if (request.accepts(['html', 'json']) === 'json') {
       await message.load('sender')
@@ -64,6 +82,7 @@ export default class MessagesController {
     const message = await Message.query()
       .where('conversation_id', conversation.id)
       .where('id', params.messageId)
+      .where(BlockService.visibleMessages(user.id))
       .preload('sender')
       .firstOrFail()
 

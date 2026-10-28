@@ -105,6 +105,16 @@ router
       .prefix('groups/:id')
       .where('id', router.matchers.number())
 
+    // Bloquer / débloquer une personne
+    router
+      .post('users/:id/block', [controllers.Blocks, 'store'])
+      .as('blocks.store')
+      .where('id', router.matchers.number())
+    router
+      .post('users/:id/unblock', [controllers.Blocks, 'destroy'])
+      .as('blocks.destroy')
+      .where('id', router.matchers.number())
+
     // 10 · Ton profil
     router.get('profile', [controllers.Profile, 'show']).as('profile.show')
     router.post('profile', [controllers.Profile, 'update']).as('profile.update')

@@ -62,8 +62,10 @@ export default class MessageThreadService {
       senderTone: avatarTone(message.senderId),
       senderAvatarUrl: message.sender.avatarUrl,
       sentAt,
+      // Message non remis (j'ai été bloqué) : une seule barre, jamais « lu »
+      undelivered: mine && message.isBlocked,
       // Accusé de lecture : mon message a été lu par au moins une autre personne
-      read: mine && readUpTo !== null && sentAt <= readUpTo,
+      read: mine && !message.isBlocked && readUpTo !== null && sentAt <= readUpTo,
     }
   }
 

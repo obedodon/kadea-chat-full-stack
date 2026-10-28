@@ -4,6 +4,8 @@ import hash from '@adonisjs/core/services/hash'
 import ConversationListService from '#services/conversation_list_service'
 import { AVATARS_DIR, avatarTone, storeAvatar } from '#services/avatar'
 import { changePasswordValidator, profileValidator } from '#validators/user'
+import Block from '#models/block'
+import { APP_ZONE } from '#services/date_format'
 
 /**
  * 10 · Ton profil : nom, photo et mot de passe.
@@ -12,8 +14,21 @@ export default class ProfileController {
   async show({ auth, view }: HttpContext) {
     const user = auth.getUserOrFail()
     const conversations = await ConversationListService.forUser(user)
+    const blocks = await Block.query()
+      .where('blocker_id', user.id)
+      .preload('blocked')
+      .orderBy('created_at', 'desc')
+
     return view.render('pages/profile/show', {
       conversations,
+      blockedUsers: blocks.map((block) => ({
+        id: block.blocked.id,
+        fullName: block.blocked.fullName,
+        initials: block.blocked.initials,
+        tone: avatarTone(block.blocked.id),
+        avatarUrl: block.blocked.avatarUrl,
+        since: block.createdAt.setZone(APP_ZONE).toFormat('dd/MM/yyyy'),
+      })),
       profile: {
         fullName: user.fullName,
         email: user.email,
@@ -65,8 +80,16 @@ export default class ProfileController {
    * Sert une photo de profil ou de groupe (réservé aux utilisateurs connectés).
    * Le nom est contrôlé par la route : pas de « ../ » possible.
    */
-  async avatar({ params, response }: HttpContext) {
+  async avatar({ params, request, response }: HttpContext) {
+    const filePath = app.makePath(AVATARS_DIR, params.file)
+
+    // ?download=1 : le navigateur enregistre la photo au lieu de l'afficher
+    if (request.input('download')) {
+      const extension = params.file.split('.').pop()
+      return response.attachment(filePath, `photo-kadea-chat.${extension}`)
+    }
+
     response.header('Cache-Control', 'private, max-age=86400')
-    return response.download(app.makePath(AVATARS_DIR, params.file))
+    return response.download(filePath)
   }
 }

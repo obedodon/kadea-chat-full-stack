@@ -32,6 +32,8 @@ export type ScannedRoutes = {
     'groups.members.add': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'groups.members.remove': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'groups.leave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'blocks.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'blocks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.show': { paramsTuple?: []; params?: {} }
     'profile.update': { paramsTuple?: []; params?: {} }
     'profile.password': { paramsTuple?: []; params?: {} }
@@ -88,6 +90,8 @@ export type ScannedRoutes = {
     'groups.members.add': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'groups.members.remove': { paramsTuple: [ParamValue,ParamValue]; params: {'id': ParamValue,'userId': ParamValue} }
     'groups.leave': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'blocks.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'blocks.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'profile.update': { paramsTuple?: []; params?: {} }
     'profile.password': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }

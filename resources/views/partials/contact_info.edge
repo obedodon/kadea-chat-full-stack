@@ -9,16 +9,47 @@
 
   <div class="kc-panel__body">
     <div class="kc-panel__id">
-      @!kcAvatar({ url: contact.avatarUrl, initials: contact.initials, tone: contact.tone, size: 'lg' })
+      @!kcAvatar({ name: contact.fullName, url: contact.avatarUrl, initials: contact.initials, tone: contact.tone, size: 'lg' })
       <h3>{{ contact.fullName }}</h3>
-      <p>{{ contact.email }}</p>
+      @if(contact.email)
+        <p>{{ contact.email }}</p>
+      @end
     </div>
 
-    <div class="kc-panel__section">
-      <p class="kc-panel__line">
-        @svg('lucide:calendar', { width: 20, height: 20 })
-        Sur Kadea Chat depuis {{ contact.memberSince }}
-      </p>
-    </div>
+    @if(contact.memberSince)
+      <div class="kc-panel__section">
+        <p class="kc-panel__line">
+          @svg('lucide:calendar', { width: 20, height: 20 })
+          Sur Kadea Chat depuis {{ contact.memberSince }}
+        </p>
+      </div>
+    @end
+
+    @if(block.iBlocked)
+      @form({ route: 'blocks.destroy', routeParams: { id: contact.id }, method: 'POST', class: 'kc-panel__section' })
+        <button type="submit" class="kc-member">
+          <span class="kc-member__icon">
+            @svg('lucide:circle-check', { width: 22, height: 22 })
+          </span>
+          Débloquer {{ contact.fullName }}
+        </button>
+      @end
+    @else
+      @form({
+        route: 'blocks.store',
+        routeParams: { id: contact.id },
+        method: 'POST',
+        class: 'kc-panel__section',
+        'x-data': '',
+        'x-on:submit': "if (!confirm('Bloquer cette personne ? Vous ne pourrez plus vous écrire en privé.')) $event.preventDefault()",
+      })
+        <button type="submit" class="kc-member kc-member--danger">
+          <span class="kc-member__icon">
+            @svg('lucide:ban', { width: 22, height: 22 })
+          </span>
+          Bloquer {{ contact.fullName }}
+        </button>
+      @end
+    @end
   </div>
 </aside>

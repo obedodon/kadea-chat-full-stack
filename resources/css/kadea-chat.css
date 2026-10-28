@@ -1017,6 +1017,48 @@
   color: var(--kc-muted) !important;
   cursor: not-allowed;
 }
+.kc-composer--blocked {
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-height: 80px;
+  color: var(--kc-muted);
+  font-size: 15px;
+  text-align: center;
+}
+.kc-composer--blocked p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.kc-blocked {
+  list-style: none;
+  margin-top: 12px;
+}
+.kc-blocked__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid var(--kc-line);
+}
+.kc-blocked__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.kc-blocked__text span {
+  color: var(--kc-muted);
+  font-size: 14px;
+}
+.kc-blocked__empty {
+  padding: 12px 0;
+  border-top: 1px solid var(--kc-line);
+  color: var(--kc-muted);
+  font-size: 15px;
+}
 .kc-profile__logout {
   display: flex;
   justify-content: flex-end;
@@ -1043,6 +1085,79 @@
   .kc-profile__grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   Visionneuse de photos
+   ========================================================================== */
+/* au survol, une photo qu'on peut ouvrir s'agrandit de 1,2 */
+.kc-avatar:has(.kc-avatar__img) {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.kc-avatar:has(.kc-avatar__img):hover {
+  z-index: 2;
+  transform: scale(1.2);
+  box-shadow: 0 6px 18px rgba(27, 29, 41, 0.25);
+}
+/* pas d'effet sur les photos qui servent à en choisir une nouvelle, ni dans la recherche */
+.kc-photo .kc-avatar:has(.kc-avatar__img),
+.kc-person .kc-avatar:has(.kc-avatar__img) {
+  cursor: inherit;
+  transform: none;
+  box-shadow: none;
+}
+.kc-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 16px 24px;
+  background: rgba(15, 16, 23, 0.92);
+}
+.kc-viewer__bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 64px;
+  padding: 0 16px 0 24px;
+  color: #fff;
+}
+.kc-viewer__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 17px;
+  font-weight: 600;
+}
+.kc-viewer__btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+}
+.kc-viewer__btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.kc-viewer__img {
+  max-width: min(100%, 900px);
+  max-height: 100%;
+  border-radius: 12px;
+  object-fit: contain;
+  cursor: default;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
 /* --- téléphone : une seule colonne à la fois --- */
