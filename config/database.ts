@@ -33,7 +33,7 @@ const dbConfig = defineConfig({
         paths: ['database/migrations'],
       },
       schemaGeneration: {
-        enabled: true,
+        enabled: !app.inProduction,
         rulesPaths: ['./database/schema_rules.js'],
       },
       /**

@@ -40,5 +40,14 @@ export default await Env.create(new URL('../', import.meta.url), {
   MAIL_MAILER: Env.schema.enum(['brevo'] as const),
   MAIL_FROM_NAME: Env.schema.string(),
   MAIL_FROM_ADDRESS: Env.schema.string(),
-  BREVO_API_KEY: Env.schema.string()
+  BREVO_API_KEY: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Dossier des photos envoyées (facultatif).
+  | En production, un volume persistant (ex. /data/avatars),
+  | sinon les photos seraient perdues à chaque redéploiement.
+  |----------------------------------------------------------
+  */
+  UPLOADS_PATH: Env.schema.string.optional(),
 })
