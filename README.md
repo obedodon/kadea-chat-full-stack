@@ -110,7 +110,19 @@ L'application est disponible sur http://localhost:3333.
 
 ### Comptes de test
 
-`node ace db:seed` crée 7 comptes, déjà confirmés, en `@kadea.test`. Leur mot de passe est `Kadea2026!`. Ces comptes n'existent qu'en local.
+`node ace db:seed` crée 7 comptes déjà confirmés, qui ont tous le mot de passe **`Kadea2026!`**. Ces comptes n'existent qu'en local.
+
+| Nom | E-mail |
+| --- | --- |
+| Obed Mungwana | `obed@kadea.test` |
+| Grâce Mbuyi | `grace@kadea.test` |
+| Josué Kalala | `josue@kadea.test` |
+| Daniel Mutombo | `daniel@kadea.test` |
+| Ruth Ilunga | `ruth@kadea.test` |
+| Prisca Nzimba | `prisca@kadea.test` |
+| Joseph Mukendi | `joseph@kadea.test` |
+
+Pour tester une discussion, connecte-toi avec un compte, puis avec un autre dans une fenêtre de navigation privée.
 
 ### Commandes utiles
 
@@ -136,6 +148,8 @@ L'application est disponible sur http://localhost:3333.
 ## Organisation Git
 
 Chaque fonctionnalité a été développée sur sa propre branche `feature/...`, puis fusionnée dans `main` par une pull request : authentification, conversations, temps réel, groupes, profil, blocage, déploiement, photos en base, et documentation.
+
+Le projet a été développé sur le dépôt [obedodon/kadea-chat-full-stack](https://github.com/obedodon/kadea-chat-full-stack), puis envoyé ici avec tout son historique. Les pull requests, avec leurs descriptions, y sont visibles : [liste des pull requests](https://github.com/obedodon/kadea-chat-full-stack/pulls?q=is%3Apr).
 
 ## Auteur
 
