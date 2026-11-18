@@ -1160,6 +1160,122 @@
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
+/* ==========================================================================
+   Mode sombre des écrans connectés (les couleurs de base sont changées
+   dans kadea-auth.css). Valable sur téléphone, tablette et ordinateur :
+   les règles d'affichage par taille d'écran ne touchent pas aux couleurs.
+   ========================================================================== */
+:root[data-theme='dark'] .kc-chat-body {
+  background: #14151d;
+  color-scheme: dark;
+}
+/* surfaces : colonne, barres, fenêtres, cartes, bulles reçues */
+:root[data-theme='dark'] :is(
+    .kc-side,
+    .kc-menu__panel,
+    .kc-main__bar,
+    .kc-composer,
+    .kc-modal__card,
+    .kc-panel,
+    .kc-card,
+    .kc-msg,
+    .kc-btn--outline,
+    .kc-btn--danger,
+    .kc-photo__btn
+  ) {
+  background: #1d1f2a;
+}
+:root[data-theme='dark'] .kc-day > span {
+  background: #1d1f2a;
+}
+:root[data-theme='dark'] .kc-main {
+  background: #14151d;
+}
+:root[data-theme='dark'] .kc-msg--deleted {
+  background: transparent;
+  border-color: var(--kc-line);
+}
+/* mes messages : une bulle bleu nuit, texte blanc */
+:root[data-theme='dark'] .kc-msg--mine {
+  background: #353b52;
+  color: #fff;
+}
+:root[data-theme='dark'] .kc-msg--deleted.kc-msg--mine {
+  background: transparent;
+  color: var(--kc-muted);
+}
+/* liste des discussions */
+:root[data-theme='dark'] .kc-item + .kc-item::before {
+  border-top-color: var(--kc-line);
+}
+:root[data-theme='dark'] .kc-item:hover {
+  background: #232634;
+}
+:root[data-theme='dark'] :is(.kc-item.is-active, .kc-person.is-selected, .kc-info-btn.is-on, .kc-chip) {
+  background: #3a2c1a;
+}
+:root[data-theme='dark'] .kc-chip:hover {
+  background: #4a3720;
+}
+:root[data-theme='dark'] .kc-item__preview {
+  color: #c3c6d1;
+}
+:root[data-theme='dark'] .kc-person:hover {
+  background: #2f3342;
+}
+/* champs */
+:root[data-theme='dark'] .kc-input {
+  background: #232634;
+}
+:root[data-theme='dark'] .kc-btn--outline {
+  border-color: #3a3e50;
+}
+/* texte foncé sur l'orange et sur les avatars pastel, dans les deux thèmes */
+:root[data-theme='dark'] :is(.kc-btn--primary, .kc-send, .kc-avatar) {
+  color: #1b1d29;
+}
+:root[data-theme='dark'] .kc-avatar--blue {
+  color: #3c4a75;
+}
+/* actions dangereuses */
+:root[data-theme='dark'] :is(
+    .kc-menu__item--danger,
+    .kc-member__remove:hover,
+    .kc-member--danger,
+    .kc-group-photo .field__error,
+    .kc-btn--danger
+  ) {
+  color: #ff7a7f;
+}
+:root[data-theme='dark'] .kc-btn--danger {
+  border-color: #7a3438;
+}
+:root[data-theme='dark'] .kc-btn--danger:hover {
+  background: #3a1f23;
+}
+/* ombres plus marquées sur fond sombre */
+:root[data-theme='dark'] :is(.kc-menu__panel, .kc-modal__card) {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme='dark'] .kc-modal__backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+/* illustration de l'écran vide (06) */
+:root[data-theme='dark'] .kc-empty__art path[fill='#D9DCE3'] {
+  fill: #3a3e50;
+}
+:root[data-theme='dark'] .kc-empty__art circle {
+  fill: #6b7080;
+}
+
+/* très petit téléphone : 4 boutons à côté du logo, on les resserre */
+@media (max-width: 380px) {
+  .kc-side__actions .kc-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
 /* --- téléphone : une seule colonne à la fois --- */
 @media (max-width: 880px) {
   .kc-chat {

@@ -11,6 +11,20 @@
       <button type="button" class="kc-icon-btn" title="Nouveau groupe" aria-label="Nouveau groupe" x-on:click="$dispatch('open-new-group')">
         @svg('lucide:user-plus', { width: 22, height: 22 })
       </button>
+      {{-- Mode clair / sombre en un clic : la lune passe en sombre, le soleil revient en clair --}}
+      <button
+        type="button"
+        class="kc-icon-btn"
+        x-data="themeToggle"
+        x-on:click="toggle"
+        x-bind:title="theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'"
+        x-bind:aria-label="theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'"
+      >
+        <span class="kc-theme-icons">
+          @svg('lucide:moon', { width: 22, height: 22, class: 'themetoggle__icon themetoggle__icon--moon' })
+          @svg('lucide:sun', { width: 22, height: 22, class: 'themetoggle__icon themetoggle__icon--sun' })
+        </span>
+      </button>
       <div class="kc-menu" x-data="{ open: false }" x-on:keydown.escape="open = false">
         <button type="button" class="kc-icon-btn" title="Menu" aria-label="Menu" x-on:click="open = !open" x-bind:aria-expanded="open">
           @svg('lucide:ellipsis-vertical', { width: 22, height: 22 })

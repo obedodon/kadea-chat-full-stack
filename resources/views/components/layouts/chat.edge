@@ -3,8 +3,10 @@
   la liste des discussions à gauche, le contenu à droite.
   Props : title, conversations, activeId (discussion ouverte), open (sur téléphone : afficher le contenu)
 --}}
+{{-- Thème choisi (cookie app_theme) : appliqué dès le serveur, pour éviter un flash de couleur --}}
+@let(theme = request.plainCookie('app_theme', { defaultValue: 'light', encoded: false }) === 'dark' ? 'dark' : 'light')
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr" data-theme="{{ theme }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
