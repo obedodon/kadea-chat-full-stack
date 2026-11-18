@@ -1,5 +1,7 @@
+{{-- Thème choisi (cookie app_theme) : appliqué dès le serveur, pour éviter un flash de couleur --}}
+@let(theme = request.plainCookie('app_theme', { defaultValue: 'light', encoded: false }) === 'dark' ? 'dark' : 'light')
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="fr" data-theme="{{ theme }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,6 +31,19 @@
       </aside>
 
       <main class="kc-auth__main">
+        <button
+          type="button"
+          class="kc-icon-btn kc-auth__theme"
+          x-data="themeToggle"
+          x-on:click="toggle"
+          x-bind:title="theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'"
+          x-bind:aria-label="theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'"
+        >
+          <span class="kc-theme-icons">
+            @svg('lucide:moon', { width: 22, height: 22, class: 'themetoggle__icon themetoggle__icon--moon' })
+            @svg('lucide:sun', { width: 22, height: 22, class: 'themetoggle__icon themetoggle__icon--sun' })
+          </span>
+        </button>
         <div class="kc-auth__logo-mobile">
           @!logo({ height: 34 })
         </div>

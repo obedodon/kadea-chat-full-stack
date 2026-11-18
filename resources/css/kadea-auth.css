@@ -348,3 +348,62 @@
 :root[data-theme='dark'] .kc-logo__dark {
   display: block;
 }
+
+/* --- bouton clair / sombre : la lune et le soleil se superposent --- */
+.kc-theme-icons {
+  display: grid;
+}
+.kc-theme-icons > svg {
+  grid-area: 1 / 1;
+}
+.kc-auth__main {
+  position: relative;
+}
+.kc-auth__theme {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+/* ==========================================================================
+   Mode sombre : on change les couleurs de base, puis les quelques endroits
+   où une couleur est écrite en dur. Le mode clair n'est pas touché.
+   ========================================================================== */
+:root[data-theme='dark'] {
+  --kc-ink: #eceef4;
+  --kc-muted: #9a9fb0;
+  --kc-line: #2f3342;
+  --kc-amber-soft: #3a2c1a;
+  --kc-red: #ff6b70;
+  --kc-green: #4cc17f;
+  --kc-green-soft: #163222;
+  --kc-info-soft: #262938;
+}
+:root[data-theme='dark'] .kc-auth-body {
+  background: #14151d;
+  color-scheme: dark;
+}
+/* le panneau de gauche reste sombre, un peu plus profond que la page */
+:root[data-theme='dark'] .kc-auth__aside {
+  background: #0e0f15;
+  border-right: 1px solid var(--kc-line);
+}
+/* texte foncé sur l'orange, dans les deux thèmes */
+:root[data-theme='dark'] .kc-bubble--out,
+:root[data-theme='dark'] .kc-auth .btn--primary {
+  color: #1b1d29;
+}
+:root[data-theme='dark'] :is(.kc-auth, .kc-profile) .field__input {
+  background: #1d1f2a;
+}
+:root[data-theme='dark'] :is(.kc-auth, .kc-profile) .field__input::placeholder {
+  color: #6b7080;
+}
+:root[data-theme='dark'] .kc-banner--err {
+  background: #3a1f23;
+  color: #ff7a7f;
+}
+:root[data-theme='dark'] .kc-info__icon {
+  background: #2c3350;
+  color: #c3cbe8;
+}

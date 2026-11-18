@@ -153,7 +153,9 @@ Alpine.data('themeToggle', function () {
   return {
     theme: 'light',
     init() {
-      this.theme = this.$el.dataset.initialTheme || 'light'
+      // Le serveur a déjà posé le thème sur <html> (cookie app_theme) : on part de là
+      const current = this.$el.dataset.initialTheme || document.documentElement.dataset.theme
+      this.theme = current === 'dark' ? 'dark' : 'light'
     },
     toggle() {
       const next = this.theme === 'dark' ? 'light' : 'dark'
